@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AxeCraft - Serveur Minecraft (v26.3)</title>
-    <!-- FontAwesome & Google Fonts -->
+    
+    <!-- Polices & Icônes -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
+    <!-- Bibliothèque 3D Minecraft (SkinView3D) -->
+    <script src="https://unpkg.com/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+
     <style>
         /* --- COULEURS ET THÈME --- */
         :root {
@@ -18,26 +22,22 @@
             --text: #ffffff;
             --text-muted: #a0a5b5;
 
-            /* Couleurs exactes des Rôles Discord */
+            /* Couleurs exactes Discord */
             --role-red: #e03131;         /* Fondateur, Co-Fonda, Responsable */
             --role-orange: #f08c00;      /* Modérateur, Super-Modérateur */
             --role-purple: #9775fa;      /* Développeur, Super-Développeur */
             --role-blue: #4c6ef5;        /* Artiste, Super-Artiste */
             --role-green: #2f9e44;       /* Architecte, Super-Architecte */
-            --role-lime: #82c91e;        /* Compositeur, Super-Compositeur, Partenaire */
+            --role-lime: #82c91e;        /* Compositeur, Super-Compositeur */
             --role-gold: #fcc419;        /* Contributeur */
             
-            /* Rôles "Mini" */
+            /* Rôles Mini */
             --role-mini-orange: #e59972;
             --role-mini-purple: #cc5de8;
             --role-mini-blue: #74c0fc;
             --role-mini-green: #63e6be;
             --role-mini-lime: #a9e34b;
             --role-mini-gold: #ffe066;
-
-            /* Influenceurs */
-            --role-inf-super: #fa5252;
-            --role-inf: #ff8787;
         }
 
         * {
@@ -119,7 +119,7 @@
             box-shadow: 0 0 15px rgba(255, 65, 108, 0.4);
         }
 
-        /* --- STRUCTURE DES PAGES --- */
+        /* --- PAGES --- */
         .page {
             display: none;
             padding: 60px 8%;
@@ -151,7 +151,7 @@
             font-size: 16px;
         }
 
-        /* --- PAGE ACCUEIL --- */
+        /* --- ACCUEIL --- */
         .hero {
             text-align: center;
             padding: 60px 0;
@@ -224,7 +224,7 @@
             margin-bottom: 15px;
         }
 
-        /* --- PAGE JEUX --- */
+        /* --- JEUX --- */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -268,7 +268,7 @@
             z-index: -1;
         }
 
-        /* --- PAGE RÈGLEMENTS --- */
+        /* --- RÈGLEMENTS --- */
         .rules-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -319,7 +319,7 @@
             color: #5865F2;
         }
 
-        /* --- PAGE CONTACTS & STAFF --- */
+        /* --- CONTACTS & RÉSEAUX --- */
         .socials-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -356,7 +356,7 @@
         .social-insta:hover { border-color: #e1306c; box-shadow: 0 5px 20px rgba(225,48,108,0.3); }
         .social-tiktok:hover { border-color: #25f4ee; box-shadow: 0 5px 20px rgba(37,244,238,0.3); }
 
-        /* ÉQUIPE ACTIVE */
+        /* --- STAFF ACTIF --- */
         .staff-active-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -367,22 +367,31 @@
         .member-card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 20px 15px;
+            padding: 22px 15px;
             text-align: center;
             border: 1px solid rgba(255,255,255,0.06);
             transition: 0.3s;
+            cursor: pointer;
+            position: relative;
         }
 
         .member-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .member-avatar {
             width: 75px;
             height: 75px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+
+        .member-card:hover .member-avatar {
+            transform: scale(1.08);
         }
 
         .member-name {
@@ -400,7 +409,15 @@
             text-transform: uppercase;
         }
 
-        /* TOUS LES RÔLES DU DISCORD */
+        .click-hint {
+            display: block;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* --- LISTE DES ROLES --- */
         .roles-section {
             background: var(--card-bg);
             padding: 30px;
@@ -447,7 +464,102 @@
             font-weight: bold;
         }
 
-        /* FOOTER */
+        /* --- MODAL 3D DU PERSONNAGE --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #191b26;
+            width: 90%;
+            max-width: 720px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ff4d4d;
+        }
+
+        .modal-body {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .modal-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #skin_container {
+            width: 260px;
+            height: 320px;
+        }
+
+        .hint-3d {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .modal-right {
+            flex: 1;
+        }
+
+        .modal-right h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .modal-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 15px 0;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* --- FOOTER --- */
         footer {
             text-align: center;
             padding: 25px;
@@ -458,11 +570,14 @@
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
+        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
             nav { flex-direction: column; gap: 15px; }
             .hero h1 { font-size: 38px; }
             .rules-container { grid-template-columns: 1fr; }
             .server-box { flex-direction: column; gap: 10px; border-radius: 20px; }
+            .modal-body { flex-direction: column; text-align: center; }
+            #skin_container { width: 220px; height: 260px; }
         }
     </style>
 </head>
@@ -470,20 +585,20 @@
 
     <!-- NAVBAR -->
     <nav>
-        <div class="logo" onclick="changePage('accueil')">
+        <div class="logo" onclick="navigateTo('accueil')">
             <i class="fa-solid fa-axe"></i> AXECRAFT
         </div>
         <ul class="nav-links">
-            <li><button class="nav-btn active" onclick="changePage('accueil', this)">Accueil</button></li>
-            <li><button class="nav-btn" onclick="changePage('jeux', this)">Nos Jeux</button></li>
-            <li><button class="nav-btn" onclick="changePage('reglements', this)">Règlements</button></li>
-            <li><button class="nav-btn" onclick="changePage('contacts', this)">Nos Contacts</button></li>
+            <li><button class="nav-btn" id="btn-accueil" onclick="navigateTo('accueil')">Accueil</button></li>
+            <li><button class="nav-btn" id="btn-jeux" onclick="navigateTo('jeux')">Nos Jeux</button></li>
+            <li><button class="nav-btn" id="btn-reglements" onclick="navigateTo('reglements')">Règlements</button></li>
+            <li><button class="nav-btn" id="btn-contacts" onclick="navigateTo('contacts')">Nos Contacts</button></li>
         </ul>
         <div class="version-badge">Version : 26.3</div>
     </nav>
 
-    <!-- ================= ACCUEIL ================= -->
-    <section id="accueil" class="page active">
+    <!-- ================= PAGE 1 : ACCUEIL ================= -->
+    <section id="accueil" class="page">
         <div class="hero">
             <h1>BIENVENUE SUR <span>AXECRAFT</span></h1>
             <p class="page-subtitle">Serveur Minecraft Communautaire & 100% Gratuit. Aucun achat, tout au talent !</p>
@@ -517,7 +632,7 @@
         </div>
     </section>
 
-    <!-- ================= JEUX ================= -->
+    <!-- ================= PAGE 2 : NOS JEUX ================= -->
     <section id="jeux" class="page">
         <h2 class="page-title">Nos Modes de Jeux</h2>
         <p class="page-subtitle">Découvre les expériences de jeu sur AxeCraft.</p>
@@ -552,13 +667,12 @@
         </div>
     </section>
 
-    <!-- ================= RÈGLEMENTS ================= -->
+    <!-- ================= PAGE 3 : RÈGLEMENTS ================= -->
     <section id="reglements" class="page">
         <h2 class="page-title">Règlements Officiels</h2>
         <p class="page-subtitle">Respecte les règles pour préserver un cadre convivial.</p>
 
         <div class="rules-container">
-            <!-- RÈGLEMENT EN JEU -->
             <div class="rules-box">
                 <h3><i class="fa-solid fa-cube" style="color: var(--primary);"></i> En Jeu (Minecraft)</h3>
                 <ul class="rules-list">
@@ -569,7 +683,6 @@
                 </ul>
             </div>
 
-            <!-- RÈGLEMENT DISCORD -->
             <div class="rules-box discord">
                 <h3><i class="fa-brands fa-discord" style="color: #5865F2;"></i> Discord Officiel</h3>
                 <ul class="rules-list">
@@ -582,7 +695,7 @@
         </div>
     </section>
 
-    <!-- ================= CONTACTS & ÉQUIPE ================= -->
+    <!-- ================= PAGE 4 : CONTACTS & ÉQUIPE ================= -->
     <section id="contacts" class="page">
         <h2 class="page-title">Nos Réseaux & Contacts</h2>
         <p class="page-subtitle">Suis notre actualité et rejoins notre communauté dès maintenant.</p>
@@ -592,7 +705,7 @@
             <a href="https://discord.gg/2uTGnYXwBX" target="_blank" class="social-btn social-discord">
                 <i class="fa-brands fa-discord" style="color: #5865F2;"></i>
                 <strong>Discord</strong>
-                <span style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Code : 2uTGnYXwBX</span>
+                <span style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">AxeCraft</span>
             </a>
             <a href="https://www.youtube.com/@axecraft01" target="_blank" class="social-btn social-yt">
                 <i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
@@ -611,56 +724,66 @@
             </a>
         </div>
 
-        <!-- MEMBRES ACTUELS DU STAFF -->
-        <h3 style="text-align: center; font-size: 26px; margin-bottom: 25px;">L'Équipe en Poste</h3>
+        <!-- MEMBRES ACTUELS DU STAFF (CLIQUABLES) -->
+        <h3 style="text-align: center; font-size: 26px; margin-bottom: 10px;">L'Équipe en Poste</h3>
+        <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">
+            <i class="fa-solid fa-hand-pointer"></i> Clique sur un membre pour afficher son personnage en 3D !
+        </p>
         
         <div class="staff-active-grid">
-            <!-- Fondateurs -->
-            <div class="member-card" style="border-bottom: 3px solid var(--role-red);">
+            <!-- MrAshitaka -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-red);" onclick="openMemberModal('MrAshitaka')">
                 <img src="https://minotar.net/helm/MrAshitaka/100.png" class="member-avatar" alt="MrAshitaka">
                 <div class="member-name">MrAshitaka</div>
                 <span class="role-pill" style="background: rgba(224, 49, 49, 0.2); color: var(--role-red);">Fondateur</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
 
-            <div class="member-card" style="border-bottom: 3px solid var(--role-red);">
+            <!-- Trinja77 -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-red);" onclick="openMemberModal('Trinja77')">
                 <img src="https://minotar.net/helm/Trinja77/100.png" class="member-avatar" alt="Trinja77">
                 <div class="member-name">Trinja77</div>
                 <span class="role-pill" style="background: rgba(224, 49, 49, 0.2); color: var(--role-red);">Fondateur</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
 
-            <!-- Co-Fondateur -->
-            <div class="member-card" style="border-bottom: 3px solid var(--role-red);">
+            <!-- Ninjabrine77 -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-red);" onclick="openMemberModal('Ninjabrine77')">
                 <img src="https://minotar.net/helm/Ninjabrine77/100.png" class="member-avatar" alt="Ninjabrine77">
                 <div class="member-name">Ninjabrine77</div>
                 <span class="role-pill" style="background: rgba(224, 49, 49, 0.2); color: var(--role-red);">Co-Fondateur</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
 
-            <!-- Responsable -->
-            <div class="member-card" style="border-bottom: 3px solid var(--role-red);">
+            <!-- Perruche_ -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-red);" onclick="openMemberModal('Perruche_')">
                 <img src="https://minotar.net/helm/Perruche_/100.png" class="member-avatar" alt="Perruche_">
                 <div class="member-name">Perruche_</div>
                 <span class="role-pill" style="background: rgba(224, 49, 49, 0.2); color: var(--role-red);">Responsable</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
 
-            <!-- Super-Développeur -->
-            <div class="member-card" style="border-bottom: 3px solid var(--role-purple);">
+            <!-- GMBL77 -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-purple);" onclick="openMemberModal('GMBL77')">
                 <img src="https://minotar.net/helm/GMBL77/100.png" class="member-avatar" alt="GMBL77">
                 <div class="member-name">GMBL77</div>
                 <span class="role-pill" style="background: rgba(151, 117, 250, 0.2); color: var(--role-purple);">Super-Développeur</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
 
-            <!-- Super-Modérateur -->
-            <div class="member-card" style="border-bottom: 3px solid var(--role-orange);">
+            <!-- Zarkitooo -->
+            <div class="member-card" style="border-bottom: 3px solid var(--role-orange);" onclick="openMemberModal('Zarkitooo')">
                 <img src="https://minotar.net/helm/Zarkitooo/100.png" class="member-avatar" alt="Zarkitooo">
                 <div class="member-name">Zarkitooo</div>
                 <span class="role-pill" style="background: rgba(240, 140, 0, 0.2); color: var(--role-orange);">Super-Modérateur</span>
+                <span class="click-hint"><i class="fa-solid fa-cube"></i> Voir le profil</span>
             </div>
         </div>
 
-        <!-- GRILLE DE TOUS LES RÔLES DISCORD -->
+        <!-- GRILLE COMPLÈTE DES RÔLES (SANS INFLUENCEURS NI PARTENAIRES) -->
         <div class="roles-section">
             <h4 style="font-size: 18px; text-transform: uppercase; color: var(--primary);">Hiérarchie Complète des Rôles</h4>
-            <p style="font-size: 13px; color: var(--text-muted);">Voici la liste complète des postes prévus sur le serveur.</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Voici la liste complète des postes de l'équipe du serveur.</p>
 
             <div class="roles-list-grid">
                 <!-- Rôles Direction & Super -->
@@ -748,23 +871,28 @@
                     <span class="role-title" style="color: var(--role-mini-gold);"><i class="fa-solid fa-shield"></i> Mini-Contributeur</span>
                     <span class="role-status">0 / Recrutement</span>
                 </div>
-
-                <!-- Influenceurs & Partenaires -->
-                <div class="role-item" style="border-color: var(--role-inf-super);">
-                    <span class="role-title" style="color: var(--role-inf-super);"><i class="fa-solid fa-shield"></i> Super-Influenceur</span>
-                    <span class="role-status">0 / Recrutement</span>
-                </div>
-                <div class="role-item" style="border-color: var(--role-lime);">
-                    <span class="role-title" style="color: var(--role-lime);"><i class="fa-solid fa-shield"></i> Partenaire</span>
-                    <span class="role-status">0 / Recrutement</span>
-                </div>
-                <div class="role-item" style="border-color: var(--role-inf);">
-                    <span class="role-title" style="color: var(--role-inf);"><i class="fa-solid fa-shield"></i> Influenceur</span>
-                    <span class="role-status">0 / Recrutement</span>
-                </div>
             </div>
         </div>
     </section>
+
+    <!-- ================= FENÊTRE MODAL (SKIN 3D + INFOS) ================= -->
+    <div id="staffModal" class="modal" onclick="modalBackgroundClick(event)">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <div class="modal-left">
+                    <canvas id="skin_container"></canvas>
+                    <span class="hint-3d"><i class="fa-solid fa-arrows-rotate"></i> Tourne et zoome à la souris</span>
+                </div>
+                <div class="modal-right">
+                    <h3 id="modalName">Pseudo</h3>
+                    <span id="modalRole" class="role-pill">Rôle</span>
+                    <div class="modal-divider"></div>
+                    <p id="modalDesc" class="modal-desc">Description...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
@@ -773,21 +901,76 @@
 
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
-        function changePage(pageId, btnElement = null) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            if(btnElement) {
-                btnElement.classList.add('active');
-            } else {
-                buttons[0].classList.add('active');
+        // --- DONNÉES DU STAFF ---
+        const staffData = {
+            "MrAshitaka": {
+                name: "MrAshitaka",
+                role: "Fondateur",
+                color: "#e03131",
+                desc: "Fondateur et créateur d'AxeCraft. Responsable de la vision globale du serveur, de la direction stratégique et de la coordination de l'ensemble des pôles."
+            },
+            "Trinja77": {
+                name: "Trinja77",
+                role: "Fondateur",
+                color: "#e03131",
+                desc: "Fondateur d'AxeCraft. En charge de la gestion générale du serveur, de la stabilité des infrastructures et du développement de la communauté."
+            },
+            "Ninjabrine77": {
+                name: "Ninjabrine77",
+                role: "Co-Fondateur",
+                color: "#e03131",
+                desc: "Co-Fondateur d'AxeCraft. Travaille en étroite collaboration avec les Fondateurs pour superviser le bon déroulement de chaque projet et maintenir la ligne directrice."
+            },
+            "Perruche_": {
+                name: "Perruche_",
+                role: "Responsable",
+                color: "#e03131",
+                desc: "Responsable principal du serveur. Il coordonne les équipes internes, veille à la bonne communication au sein du staff et à l'organisation quotidienne."
+            },
+            "GMBL77": {
+                name: "GMBL77",
+                role: "Super-Développeur",
+                color: "#9775fa",
+                desc: "Super-Développeur en charge du développement technique d'AxeCraft. Il conçoit, configure et optimise les plugins et les systèmes exclusifs en 26.3."
+            },
+            "Zarkitooo": {
+                name: "Zarkitooo",
+                role: "Super-Modérateur",
+                color: "#f08c00",
+                desc: "Super-Modérateur veillant à la paix et au respect des règles. Il encadre la modération, traite les cas complexes et garantit une expérience saine aux joueurs."
             }
+        };
+
+        // --- GESTION DE LA NAVIGATION AVEC CONSERVATION AU RELOAD ---
+        function navigateTo(pageId) {
+            window.location.hash = pageId;
+        }
+
+        function renderPage() {
+            // Récupère l'ancre dans l'URL (par défaut "accueil")
+            let hash = window.location.hash.replace('#', '');
+            if (!hash || !document.getElementById(hash)) {
+                hash = 'accueil';
+            }
+
+            // Masque toutes les pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Affiche la bonne page
+            document.getElementById(hash).classList.add('active');
+
+            // Met à jour la surbrillance des boutons du menu
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('btn-' + hash);
+            if (activeBtn) activeBtn.classList.add('active');
+
             window.scrollTo(0, 0);
         }
 
+        // Écouteurs pour le chargement et le changement d'URL
+        window.addEventListener('DOMContentLoaded', renderPage);
+        window.addEventListener('hashchange', renderPage);
+
+        // --- COPIER L'IP ---
         function copyIP() {
             const ip = document.getElementById("ipText").innerText;
             navigator.clipboard.writeText(ip);
@@ -801,6 +984,72 @@
                 btn.style.background = "var(--primary)";
             }, 2500);
         }
+
+        // --- VISIONNEUSE 3D (SKINVIEW3D) ---
+        let skinViewer = null;
+
+        function initViewer() {
+            if (!skinViewer) {
+                const canvas = document.getElementById("skin_container");
+                skinViewer = new skinview3d.SkinViewer({
+                    canvas: canvas,
+                    width: 260,
+                    height: 320
+                });
+
+                // Position et zoom de la caméra
+                skinViewer.camera.position.set(0, 0, 65);
+                skinViewer.zoom = 0.85;
+
+                // Contrôle de la souris (rotation et zoom)
+                const controls = skinview3d.createOrbitControls(skinViewer);
+                controls.enableRotate = true;
+                controls.enableZoom = true;
+                controls.enablePan = false;
+
+                // Animation naturelle de respiration/idle
+                const anim = new skinview3d.IdleAnimation();
+                anim.speed = 0.8;
+                skinViewer.animation = anim;
+            }
+        }
+
+        function openMemberModal(username) {
+            const member = staffData[username];
+            if (!member) return;
+
+            // Remplir les informations à droite
+            document.getElementById("modalName").innerText = member.name;
+            const roleEl = document.getElementById("modalRole");
+            roleEl.innerText = member.role;
+            roleEl.style.color = member.color;
+            roleEl.style.background = member.color + "22"; // 15% d'opacité
+            document.getElementById("modalDesc").innerText = member.desc;
+
+            // Afficher la fenêtre
+            document.getElementById("staffModal").classList.add("show");
+
+            // Initialiser ou recharger la vue 3D
+            initViewer();
+            
+            // Télécharge et applique le vrai skin Minecraft du pseudo (avec support CORS)
+            skinViewer.loadSkin("https://mineskin.eu/skin/" + username);
+        }
+
+        function closeModal() {
+            document.getElementById("staffModal").classList.remove("show");
+        }
+
+        function modalBackgroundClick(e) {
+            if (e.target.id === "staffModal") {
+                closeModal();
+            }
+        }
+
+        // Fermer la modal avec la touche Échap
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeModal();
+        });
     </script>
 </body>
 </html>
