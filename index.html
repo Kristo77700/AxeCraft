@@ -3,1411 +3,1768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxeCraft - Serveur Minecraft (v26.3)</title>
+    <title>AxeCraft - Serveur Minecraft 26.3 | Groupe Celestia</title>
     
-    <!-- Polices Minecraft et Poppins -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Moteur 3D Skinview3d -->
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 3D Minecraft Skin Viewer -->
     <script src="https://unpkg.com/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 
     <style>
-        /* ==========================================================================
-           PALETTE DE COULEURS - THEME AXECRAFT (Hache Diamant + Cerisier)
-           ========================================================================== */
         :root {
-            --diamond-cyan: #4dedf4;
-            --diamond-glow: #2bc8d9;
-            --diamond-dark: #0f4f56;
-
-            --cherry-pink: #f7a8b8;
-            --cherry-light: #ffd6e0;
-            --cherry-dark: #8d3a56;
-
-            --mc-gui-bg: #1e1f29;
-            --mc-border-light: #4e5166;
-            --mc-border-dark: #0a0b0f;
-            --mc-green: #55ff55;
-            --text-light: #ffffff;
-            --text-muted: #abb2bf;
-
-            /* Rôles Discord */
-            --role-red: #e03131;
-            --role-orange: #f08c00;
-            --role-purple: #9775fa;
-            --role-blue: #4c6ef5;
-            --role-green: #2f9e44;
-            --role-lime: #82c91e;
-            --role-gold: #fcc419;
-            --role-mini-orange: #e59972;
-            --role-mini-purple: #cc5de8;
-            --role-mini-blue: #74c0fc;
-            --role-mini-green: #63e6be;
-            --role-mini-lime: #a9e34b;
-            --role-mini-gold: #ffe066;
+            --cherry-pink: #f8c8dc;
+            --cherry-dark: #e88ca8;
+            --cherry-glow: rgba(248, 200, 220, 0.4);
+            --cherry-petal: #ffb7c5;
+            --diamond: #4deeea;
+            --diamond-dark: #00adb5;
+            --diamond-glow: rgba(77, 238, 234, 0.4);
+            --gold: #fcc419;
+            --wood-dark: #1b1612;
+            --wood-medium: #2a221b;
+            --wood-light: #3d3128;
+            --wood-border: #524235;
+            --bg-dark: #0f0d0b;
+            --bg-card: rgba(27, 22, 18, 0.88);
+            --text-main: #f3efe6;
+            --text-muted: #b8aba0;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            image-rendering: pixelated;
         }
 
         body {
-            background-color: #0b0c10;
-            background-image: 
-                radial-gradient(circle at 50% 15%, rgba(247, 168, 184, 0.12), transparent 60%),
-                radial-gradient(circle at 80% 80%, rgba(77, 237, 244, 0.08), transparent 50%),
-                linear-gradient(rgba(11, 12, 16, 0.88), rgba(11, 12, 16, 0.98)),
-                url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=1920');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            color: var(--text-light);
             font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             overflow-x: hidden;
-            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(232, 140, 168, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(77, 238, 234, 0.06) 0%, transparent 40%),
+                linear-gradient(180deg, #120e0c 0%, #080706 100%);
+            min-height: 100vh;
         }
 
+        /* Minecraft Font Utilities (strictly no accents in mc-font) */
         .mc-font {
-            font-family: 'Minecraft', monospace !important;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-family: 'Minecraft', monospace, sans-serif;
+            letter-spacing: 0.5px;
         }
 
-        /* --- CANVAS PÉTALES ANIMÉS --- */
-        #sakura-canvas {
+        /* Petals Canvas */
+        #petals-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* --- CADRE MINECRAFT --- */
-        .mc-panel {
-            background: var(--mc-gui-bg);
-            border: 4px solid #333647;
-            box-shadow: 
-                inset 4px 4px 0px var(--mc-border-light), 
-                inset -4px -4px 0px var(--mc-border-dark),
-                0 15px 35px rgba(0, 0, 0, 0.85);
+        /* Main Container */
+        .site-wrapper {
             position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* --- BARRE DE NAVIGATION --- */
-        nav {
+        /* HEADER & NAVIGATION */
+        header {
             position: sticky;
             top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 8%;
-            background: rgba(18, 19, 26, 0.96);
-            border-bottom: 4px solid #2d2f3d;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.8);
+            background: rgba(20, 16, 13, 0.94);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--wood-border);
+            z-index: 100;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
         }
 
-        .brand-box {
+        .navbar {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+        }
+
+        .brand-link {
             display: flex;
             align-items: center;
             gap: 15px;
-            cursor: pointer;
-            transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .brand-box:hover {
-            transform: scale(1.03);
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--cherry-glow));
+            transition: transform 0.3s ease;
         }
 
-        .brand-logo-img {
-            width: 48px;
-            height: 48px;
-            border: 2px solid var(--cherry-pink);
-            box-shadow: 0 0 10px rgba(247, 168, 184, 0.5);
-            background: #2b111a;
-            object-fit: cover;
+        .brand-link:hover .brand-logo {
+            transform: scale(1.08) rotate(-4deg);
         }
 
         .brand-name {
-            font-size: 28px;
-            color: var(--diamond-cyan);
-            text-shadow: 3px 3px 0px var(--diamond-dark);
+            font-size: 1.45rem;
+            color: var(--cherry-pink);
+            text-shadow: 2px 2px 0px #000, 0 0 12px var(--cherry-glow);
         }
 
-        .brand-name span {
-            color: var(--cherry-pink);
-            text-shadow: 3px 3px 0px var(--cherry-dark);
+        .version-tag {
+            background: linear-gradient(135deg, var(--diamond-dark), var(--diamond));
+            color: #000;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            box-shadow: 0 0 10px var(--diamond-glow);
         }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             list-style: none;
         }
 
-        /* BOUTON MINECRAFT */
-        .mc-button {
-            background: #4a4d61;
-            color: #ffffff;
-            border: 3px solid #1a1b24;
-            box-shadow: 
-                inset 3px 3px 0px #707594, 
-                inset -3px -3px 0px #2a2c38;
+        .nav-item button {
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-muted);
             padding: 10px 18px;
-            font-size: 15px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.1s ease;
-            text-decoration: none;
-            display: inline-flex;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
         }
 
-        .mc-button:hover, .mc-button.active {
-            background: #5b607a;
-            color: var(--diamond-cyan);
-            border-color: var(--diamond-cyan);
-            text-shadow: 2px 2px 0px #000;
-            box-shadow: 
-                inset 3px 3px 0px #8288ab, 
-                inset -3px -3px 0px #353847,
-                0 0 12px rgba(77, 237, 244, 0.4);
+        .nav-item button:hover {
+            color: var(--cherry-pink);
+            background: rgba(248, 200, 220, 0.08);
+            border-color: rgba(248, 200, 220, 0.2);
             transform: translateY(-2px);
         }
 
-        .mc-button:active {
-            box-shadow: 
-                inset -3px -3px 0px #707594, 
-                inset 3px 3px 0px #2a2c38;
-            transform: translateY(2px);
+        .nav-item button.active {
+            color: #000;
+            background: linear-gradient(135deg, var(--cherry-pink), var(--cherry-dark));
+            border-color: var(--cherry-pink);
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--cherry-glow);
         }
 
-        .version-badge {
-            background: #2c121c;
-            color: var(--cherry-pink);
-            border: 2px solid var(--cherry-pink);
-            padding: 6px 14px;
-            font-size: 14px;
-            text-shadow: 1px 1px 0px #000;
-            box-shadow: 0 0 10px rgba(247, 168, 184, 0.3);
-        }
-
-        /* --- PAGES --- */
-        .page {
+        .mobile-menu-btn {
             display: none;
-            padding: 50px 8%;
-            flex: 1;
-            z-index: 2;
-            position: relative;
-            animation: pageEnter 0.25s ease-out;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
-        .page.active {
+        /* PAGE VIEWS */
+        .page-content {
+            flex: 1;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .page-content.active-page {
             display: block;
         }
 
-        @keyframes pageEnter {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
+        /* HERO SECTION */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 50px 20px 40px;
+            position: relative;
+        }
+
+        .hero-logo {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 25px var(--cherry-glow));
+            margin-bottom: 20px;
+            animation: floatLogo 4s ease-in-out infinite;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            color: var(--cherry-pink);
+            text-shadow: 3px 3px 0px #000, 0 0 20px var(--cherry-glow);
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .f2p-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(77, 238, 234, 0.12);
+            border: 1px solid var(--diamond);
+            color: var(--diamond);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(77, 238, 234, 0.15);
+        }
+
+        /* SERVER IP BOX */
+        .ip-card {
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            padding: 18px 28px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            max-width: 520px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .ip-card:hover {
+            border-color: var(--diamond);
+            box-shadow: 0 0 25px var(--diamond-glow);
+            transform: scale(1.02);
+        }
+
+        .highlight-pulse {
+            animation: pulseGlow 1.8s ease;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); border-color: var(--wood-border); }
+            25% { transform: scale(1.05); border-color: var(--diamond); box-shadow: 0 0 35px var(--diamond); }
+            50% { transform: scale(1.02); border-color: var(--cherry-pink); box-shadow: 0 0 30px var(--cherry-pink); }
+            100% { transform: scale(1); border-color: var(--wood-border); }
+        }
+
+        .ip-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .ip-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ip-address {
+            font-size: 1.35rem;
+            color: var(--diamond);
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .ip-action {
+            background: linear-gradient(135deg, var(--diamond-dark), var(--diamond));
+            color: #000;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* FEATURE GRIDS */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            border-radius: 14px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cherry-pink), var(--diamond));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(248, 200, 220, 0.4);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 2.2rem;
+            color: var(--cherry-pink);
+            margin-bottom: 18px;
+            display: inline-block;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* HEADINGS */
         .section-header {
             text-align: center;
             margin-bottom: 40px;
         }
 
-        .section-header h2 {
-            font-size: 40px;
-            color: var(--diamond-cyan);
-            text-shadow: 4px 4px 0px var(--diamond-dark);
-            margin-bottom: 8px;
-        }
-
-        .section-header p {
+        .section-title {
+            font-size: 2.2rem;
             color: var(--cherry-pink);
-            font-size: 15px;
-            text-shadow: 1px 1px 0px #000;
+            text-shadow: 2px 2px 0px #000, 0 0 15px var(--cherry-glow);
+            margin-bottom: 10px;
         }
 
-        /* --- ACCUEIL --- */
-        .hero-section {
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* RULES SECTION */
+        .rules-tab-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 20px 0;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
         }
 
-        .hero-logo-box {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
-        .hero-logo-img {
-            width: 150px;
-            height: 150px;
-            border: 4px solid var(--diamond-cyan);
-            box-shadow: 0 0 35px rgba(77, 237, 244, 0.45);
-            background: #1c1d26;
-            object-fit: cover;
-        }
-
-        .hero-title {
-            font-size: 58px;
-            color: #ffffff;
-            text-shadow: 4px 4px 0px #111218;
-            line-height: 1.15;
-            margin-bottom: 12px;
-        }
-
-        .hero-title span {
-            color: var(--diamond-cyan);
-            text-shadow: 4px 4px 0px var(--diamond-dark);
-        }
-
-        /* Boîte IP avec animation quand ciblée */
-        .ip-click-card {
-            margin-top: 30px;
-            padding: 16px 35px;
-            display: inline-flex;
-            align-items: center;
-            gap: 25px;
+        .rules-tab-btn {
+            background: var(--wood-medium);
+            border: 2px solid var(--wood-border);
+            color: var(--text-muted);
+            padding: 12px 26px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
-            background: #15161f;
-        }
-
-        .ip-click-card:hover {
-            border-color: var(--diamond-cyan);
-            box-shadow: 0 0 20px rgba(77, 237, 244, 0.3);
-            transform: scale(1.02);
-        }
-
-        /* Effet de mise en avant quand on clique sur "Commencer l'Aventure" */
-        @keyframes ipPulseAnimation {
-            0% { transform: scale(1); box-shadow: 0 0 10px var(--diamond-cyan); border-color: var(--diamond-cyan); }
-            50% { transform: scale(1.08); box-shadow: 0 0 45px var(--diamond-cyan), 0 0 25px var(--cherry-pink); border-color: var(--cherry-pink); }
-            100% { transform: scale(1); box-shadow: 0 0 15px var(--diamond-cyan); border-color: var(--diamond-cyan); }
-        }
-
-        .highlight-pulse {
-            animation: ipPulseAnimation 0.8s ease-in-out 3;
-        }
-
-        .ip-display {
-            font-size: 26px;
-            color: var(--mc-green);
-            text-shadow: 2px 2px 0px #084008;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 60px;
-            width: 100%;
-        }
-
-        .feature-box {
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .feature-box i {
-            font-size: 42px;
-            color: var(--diamond-cyan);
-            margin-bottom: 15px;
-            text-shadow: 3px 3px 0px #000;
-        }
-
-        .feature-box h3 {
-            font-size: 20px;
-            color: var(--cherry-pink);
-            margin-bottom: 10px;
-        }
-
-        /* --- PAGE NOS JEUX --- */
-        .games-selection-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        .game-showcase-card {
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
             display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: 0.3s;
+            align-items: center;
+            gap: 10px;
         }
 
-        .game-showcase-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--diamond-cyan);
+        .rules-tab-btn:hover {
+            color: var(--text-main);
+            border-color: var(--cherry-pink);
         }
 
-        .game-img-box {
-            height: 220px;
-            position: relative;
-            background-size: cover;
-            background-position: center;
+        .rules-tab-btn.active {
+            background: linear-gradient(135deg, var(--cherry-pink), var(--cherry-dark));
+            color: #000;
+            border-color: var(--cherry-pink);
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--cherry-glow);
         }
 
-        .game-status-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 4px 10px;
-            font-size: 11px;
-            border: 1px solid currentColor;
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .game-card-body {
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .game-card-body h3 {
-            font-size: 24px;
-            color: var(--diamond-cyan);
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px #000;
-        }
-
-        .game-card-body p {
+        .rules-preamble {
+            background: rgba(248, 200, 220, 0.05);
+            border: 1px solid rgba(248, 200, 220, 0.2);
+            border-left: 4px solid var(--cherry-pink);
+            padding: 18px 22px;
+            border-radius: 8px;
+            margin-bottom: 30px;
             color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            flex: 1;
-        }
-
-        /* --- PAGE AVENTHYR (DÉTAILS COMPLETS) --- */
-        .back-nav-box {
-            margin-bottom: 25px;
-        }
-
-        .aventhyr-hero-banner {
-            position: relative;
-            padding: 60px 40px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 40px;
-            background: linear-gradient(to right, rgba(14, 15, 22, 0.95) 45%, rgba(14, 15, 22, 0.5) 100%),
-                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920') center/cover;
-        }
-
-        .aventhyr-tag {
-            display: inline-block;
-            background: var(--diamond-dark);
-            color: var(--diamond-cyan);
-            border: 1px solid var(--diamond-cyan);
-            padding: 4px 12px;
-            font-size: 12px;
-            margin-bottom: 15px;
-        }
-
-        .aventhyr-hero-banner h2 {
-            font-size: 46px;
-            color: var(--diamond-cyan);
-            text-shadow: 3px 3px 0px var(--diamond-dark);
-            margin-bottom: 15px;
-        }
-
-        .aventhyr-story {
-            max-width: 680px;
-            font-size: 15px;
-            line-height: 1.8;
-            color: var(--text-light);
-            margin-bottom: 25px;
-        }
-
-        .aventhyr-pillars {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .pillar-card {
-            padding: 25px;
-            background: #14151e;
-        }
-
-        .pillar-card i {
-            font-size: 32px;
-            color: var(--cherry-pink);
-            margin-bottom: 15px;
-        }
-
-        .pillar-card h4 {
-            font-size: 18px;
-            color: var(--diamond-cyan);
-            margin-bottom: 8px;
-        }
-
-        .pillar-card p {
-            font-size: 14px;
-            color: var(--text-muted);
+            font-size: 0.92rem;
             line-height: 1.6;
         }
 
-        /* Galerie Aventhyr */
-        .gallery-grid {
+        .rules-preamble strong {
+            color: var(--cherry-pink);
+        }
+
+        .rules-group {
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .rules-group.active {
+            display: block;
+        }
+
+        .rules-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 20px;
         }
 
-        .gallery-item {
-            height: 180px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #2d2f3d;
-            background-size: cover;
-            background-position: center;
+        .rule-card {
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            border-radius: 12px;
+            padding: 22px;
+            transition: all 0.25s ease;
             display: flex;
-            align-items: flex-end;
-            padding: 15px;
+            flex-direction: column;
         }
 
-        .gallery-item::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+        .rule-card:hover {
+            border-color: rgba(77, 238, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        .gallery-caption {
-            position: relative;
-            z-index: 2;
-            color: var(--cherry-pink);
-            font-size: 13px;
-        }
-
-        /* --- RÈGLEMENTS --- */
-        .rules-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .rules-box {
-            padding: 35px;
-        }
-
-        .rules-box h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
+        .rule-card-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
-        .rules-list {
-            list-style: none;
+        .rule-num {
+            background: rgba(77, 238, 234, 0.15);
+            color: var(--diamond);
+            border: 1px solid var(--diamond);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
         }
 
-        .rules-list li {
-            margin-bottom: 14px;
-            font-size: 14px;
+        .rule-title {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .rule-body {
             color: var(--text-muted);
+            font-size: 0.88rem;
             line-height: 1.6;
+            flex: 1;
+        }
+
+        .rule-body p {
+            margin-bottom: 8px;
+        }
+
+        .rule-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-highlight {
+            color: var(--diamond);
+            font-weight: 600;
+        }
+
+        .rule-warning {
+            color: #ff8787;
+            font-weight: 600;
+        }
+
+        .rule-success {
+            color: #8ce99a;
+            font-weight: 600;
+        }
+
+        /* JEUX & AVENTHYR */
+        .game-banner {
+            background: linear-gradient(180deg, rgba(20,16,13,0.7) 0%, rgba(10,8,6,0.95) 100%),
+                        radial-gradient(circle at top right, rgba(232, 140, 168, 0.25), transparent 60%);
+            border: 2px solid var(--wood-border);
+            border-radius: 16px;
+            padding: 40px;
             position: relative;
-            padding-left: 24px;
-        }
-
-        .rules-list li::before {
-            content: "■";
-            position: absolute;
-            left: 0;
-            color: var(--cherry-pink);
-            font-size: 14px;
-        }
-
-        /* --- CONTACTS & STAFF --- */
-        .socials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 60px;
-        }
-
-        .social-card {
-            padding: 24px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-badge {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #e03131, #f03e3e);
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: var(--cherry-pink);
+            text-shadow: 2px 2px 0px #000, 0 0 15px var(--cherry-glow);
+        }
+
+        .btn-action {
+            display: inline-flex;
             align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--cherry-pink), var(--cherry-dark));
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
             text-decoration: none;
-            color: var(--text-light);
-            transition: 0.2s;
+            width: fit-content;
         }
 
-        .social-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--diamond-cyan);
-            box-shadow: 0 0 15px rgba(77, 237, 244, 0.3);
+        .btn-action:hover {
+            box-shadow: 0 0 20px var(--cherry-glow);
+            transform: translateY(-3px);
         }
 
-        .social-card i {
-            font-size: 42px;
-            margin-bottom: 12px;
+        .btn-diamond {
+            background: linear-gradient(135deg, var(--diamond-dark), var(--diamond));
+            color: #000;
         }
 
+        .btn-diamond:hover {
+            box-shadow: 0 0 20px var(--diamond-glow);
+        }
+
+        /* STAFF & ROLES */
         .staff-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
-        .member-card {
-            padding: 22px 15px;
-            text-align: center;
+        .staff-card {
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.25s ease;
         }
 
-        .member-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--diamond-cyan);
-            box-shadow: 0 0 15px rgba(77, 237, 244, 0.3);
+        .staff-card:hover {
+            border-color: var(--cherry-pink);
+            box-shadow: 0 0 18px var(--cherry-glow);
+            transform: translateY(-4px);
         }
 
-        .member-avatar {
-            width: 75px;
-            height: 75px;
-            border: 2px solid #000;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.6);
-            margin-bottom: 10px;
-            transition: transform 0.2s;
+        .staff-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 8px;
+            border: 2px solid var(--wood-border);
+            background: #111;
+            image-rendering: pixelated;
         }
 
-        .member-card:hover .member-avatar {
-            transform: scale(1.1);
+        .staff-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .member-name {
-            font-size: 16px;
+        .staff-name {
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 6px;
+            color: var(--text-main);
         }
 
-        .role-badge {
-            font-size: 12px;
+        .staff-role-badge {
+            font-size: 0.72rem;
             padding: 3px 8px;
-            border: 1px solid currentColor;
-            display: inline-block;
+            border-radius: 4px;
+            font-weight: 800;
+            width: fit-content;
+            color: #000;
         }
 
-        /* --- GRILLE DE TOUS LES RÔLES --- */
-        .roles-container {
+        /* ROLES HIERARCHY TABLE */
+        .hierarchy-box {
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            border-radius: 14px;
             padding: 30px;
         }
 
-        .roles-grid {
+        .hierarchy-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
 
-        .role-item {
+        .hierarchy-item {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--wood-border);
+            padding: 12px 18px;
+            border-radius: 8px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            background: #14151e;
-            border: 2px solid #282a38;
-            padding: 10px 14px;
         }
 
-        .role-title {
-            font-size: 14px;
-            font-weight: 600;
+        .role-tag {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.88rem;
         }
 
-        .role-status {
-            font-size: 13px;
+        .role-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .role-count {
+            background: rgba(255,255,255,0.06);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            padding: 2px 10px;
-            background: #0d0e14;
-            border: 1px solid #333;
+            font-weight: 700;
         }
 
-        .role-status.filled {
-            color: var(--mc-green);
-            border-color: var(--mc-green);
-            font-weight: bold;
+        /* SOCIALS GRID */
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 45px;
         }
 
-        /* --- FENÊTRE MODALE 3D --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(6px);
+        .social-btn {
+            display: flex;
             align-items: center;
+            gap: 16px;
+            background: var(--bg-card);
+            border: 2px solid var(--wood-border);
+            padding: 18px 22px;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-4px);
+            border-color: var(--cherry-pink);
+            box-shadow: 0 0 15px var(--cherry-glow);
+        }
+
+        .social-icon {
+            font-size: 1.8rem;
+        }
+
+        .social-text h4 {
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+
+        .social-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* 3D SKIN MODAL */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
+        .modal-content {
+            background: var(--wood-dark);
+            border: 2px solid var(--wood-border);
+            border-radius: 16px;
+            max-width: 750px;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        }
+
+        .skin-canvas-container {
+            width: 320px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(232, 140, 168, 0.15) 0%, rgba(0,0,0,0.4) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid var(--wood-border);
+        }
+
+        .skin-details {
+            flex: 1;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
         }
 
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-box {
-            width: 90%;
-            max-width: 720px;
-            padding: 30px;
-            position: relative;
-        }
-
-        .modal-close {
+        .modal-close-btn {
             position: absolute;
-            top: 15px; right: 20px;
-            font-size: 28px;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.08);
+            border: none;
             color: var(--text-muted);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             cursor: pointer;
-        }
-
-        .modal-close:hover {
-            color: #ff4d4d;
-        }
-
-        .modal-flex {
             display: flex;
             align-items: center;
-            gap: 30px;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
         }
 
-        .modal-3d-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #0f1016;
-            border: 3px solid #282a38;
-            padding: 10px;
+        .modal-close-btn:hover {
+            background: #ff4d4f;
+            color: #fff;
         }
 
-        #skin_container {
-            width: 250px;
-            height: 310px;
-        }
-
-        .modal-info h3 {
-            font-size: 32px;
-            color: var(--diamond-cyan);
-            text-shadow: 2px 2px 0px #000;
-            margin-bottom: 8px;
-        }
-
-        /* --- NOTIFICATION TOAST VISUELLE --- */
-        #toast-alert {
+        /* TOAST ALERT */
+        .toast {
             position: fixed;
             bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #14151f;
-            border: 3px solid var(--mc-green);
-            box-shadow: 0 0 25px rgba(85, 255, 85, 0.4);
-            padding: 14px 28px;
-            border-radius: 4px;
-            z-index: 9999;
-            display: flex;
+            right: 30px;
+            background: rgba(18, 14, 12, 0.95);
+            border: 2px solid var(--diamond);
+            color: var(--text-main);
+            padding: 14px 24px;
+            border-radius: 10px;
+            box-shadow: 0 0 25px var(--diamond-glow);
+            z-index: 2000;
+            display: none;
             align-items: center;
-            gap: 15px;
-            color: #ffffff;
-            opacity: 0;
-            transition: all 0.3s ease;
-            pointer-events: none;
+            gap: 12px;
+            font-size: 0.92rem;
+            animation: slideUp 0.3s ease forwards;
         }
 
-        #toast-alert.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* FOOTER */
         footer {
-            position: relative;
-            z-index: 2;
+            background: rgba(15, 13, 11, 0.95);
+            border-top: 2px solid var(--wood-border);
+            padding: 35px 24px;
             text-align: center;
-            padding: 25px;
-            background: #0d0e13;
-            border-top: 4px solid #242633;
-            font-size: 13px;
-            color: var(--text-muted);
             margin-top: auto;
         }
 
-        @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 15px; }
-            .hero-title { font-size: 36px; }
-            .rules-grid { grid-template-columns: 1fr; }
-            .modal-flex { flex-direction: column; text-align: center; }
-            .ip-click-card { flex-direction: column; gap: 10px; }
-            .aventhyr-hero-banner { padding: 30px 20px; }
-            .aventhyr-hero-banner h2 { font-size: 32px; }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-brand {
+            font-size: 1.2rem;
+            color: var(--cherry-pink);
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 850px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--wood-dark);
+                flex-direction: column;
+                padding: 15px;
+                border-bottom: 2px solid var(--wood-border);
+            }
+
+            .nav-links.mobile-open {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .modal-content {
+                flex-direction: column;
+            }
+
+            .skin-canvas-container {
+                width: 100%;
+                height: 280px;
+                border-right: none;
+                border-bottom: 2px solid var(--wood-border);
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .ip-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .ip-info {
+                align-items: center;
+            }
+
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Effet de pétales de cerisier qui tombent -->
-    <canvas id="sakura-canvas"></canvas>
+    <!-- Falling Petals Background Canvas -->
+    <canvas id="petals-canvas"></canvas>
 
-    <!-- NOTIFICATION FLOTTANTE MINECRAFT -->
-    <div id="toast-alert" class="mc-panel">
-        <i class="fa-solid fa-circle-check" style="font-size: 24px; color: var(--mc-green);"></i>
-        <div>
-            <div class="mc-font" style="color: var(--mc-green); font-size: 14px;">IP COPIEE DANS LE PRESSE-PAPIER !</div>
-            <div style="font-size: 12px; color: var(--text-muted);">Lance ta version 26.3 et colle l'IP pour nous rejoindre.</div>
-        </div>
-    </div>
+    <div class="site-wrapper">
 
-    <!-- NAVIGATION -->
-    <nav>
-        <div class="brand-box" onclick="navigateTo('accueil')">
-            <img src="logo.png" onerror="this.src='https://minotar.net/cube/Diamond_Axe/100.png'" alt="AxeCraft" class="brand-logo-img">
-            <div class="brand-name mc-font">AXE<span>CRAFT</span></div>
-        </div>
+        <!-- HEADER -->
+        <header>
+            <nav class="navbar">
+                <a href="#accueil" class="brand-link" onclick="navigateTo('accueil')">
+                    <img src="logo.png" alt="AxeCraft Logo" class="brand-logo" onerror="this.style.display='none'">
+                    <div>
+                        <span class="brand-name mc-font">AXECRAFT</span>
+                    </div>
+                    <span class="version-tag mc-font">26.3</span>
+                </a>
 
-        <ul class="nav-links">
-            <li><button class="mc-button mc-font" id="btn-accueil" onclick="navigateTo('accueil')">ACCUEIL</button></li>
-            <li><button class="mc-button mc-font" id="btn-jeux" onclick="navigateTo('jeux')">NOS JEUX</button></li>
-            <li><button class="mc-button mc-font" id="btn-reglements" onclick="navigateTo('reglements')">REGLEMENTS</button></li>
-            <li><button class="mc-button mc-font" id="btn-contacts" onclick="navigateTo('contacts')">NOS CONTACTS</button></li>
-        </ul>
+                <button class="mobile-menu-btn" onclick="toggleMobileNav()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-        <div class="version-badge mc-font">VERSION 26.3</div>
-    </nav>
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-item">
+                        <button id="nav-btn-accueil" class="active mc-font" onclick="navigateTo('accueil')">
+                            <i class="fa-solid fa-house"></i> ACCUEIL
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="nav-btn-jeux" class="mc-font" onclick="navigateTo('jeux')">
+                            <i class="fa-solid fa-gamepad"></i> NOS JEUX
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="nav-btn-reglements" class="mc-font" onclick="navigateTo('reglements')">
+                            <i class="fa-solid fa-book"></i> REGLEMENTS
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="nav-btn-contacts" class="mc-font" onclick="navigateTo('contacts')">
+                            <i class="fa-solid fa-users"></i> EQUIPE & LIENS
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-    <!-- ================= PAGE 1 : ACCUEIL ================= -->
-    <section id="accueil" class="page">
-        <div class="hero-section">
-            <div class="hero-logo-box">
-                <img src="logo.png" onerror="this.src='https://minotar.net/cube/Diamond_Axe/100.png'" alt="AxeCraft" class="hero-logo-img">
+        <!-- PAGE 1: ACCUEIL -->
+        <main id="page-accueil" class="page-content active-page">
+            <section class="hero">
+                <img src="logo.png" alt="AxeCraft Logo" class="hero-logo" onerror="this.style.display='none'">
+                <div class="f2p-badge mc-font">
+                    <i class="fa-solid fa-gem"></i> SERVEUR 100% GRATUIT • FREE-TO-PLAY
+                </div>
+                <h1 class="hero-title mc-font">BIENVENUE SUR AXECRAFT</h1>
+                <p class="hero-subtitle">
+                    Plongez dans un univers Minecraft unique propulsé par la communauté du <strong>Groupe Celestia</strong>. 
+                    Rejoignez dès maintenant notre aventure RPG en version <strong>26.3</strong>.
+                </p>
+
+                <!-- Interactive Server IP Box -->
+                <div class="ip-card" id="mainIpBox" onclick="copyIP()">
+                    <div class="ip-info">
+                        <span class="ip-label mc-font">ADRESSE DU SERVEUR</span>
+                        <span class="ip-address mc-font">play.axecraft.fr</span>
+                    </div>
+                    <div class="ip-action mc-font">
+                        <i class="fa-solid fa-copy"></i> COPIER L'IP
+                    </div>
+                </div>
+            </section>
+
+            <!-- Highlights Grid -->
+            <section class="grid-3">
+                <div class="feature-card">
+                    <i class="fa-solid fa-shield-halved feature-icon"></i>
+                    <h3 class="feature-title mc-font">100% FREE-TO-PLAY</h3>
+                    <p class="feature-desc">
+                        Aucune boutique payante, aucun avantage Pay-to-Win. L'intégralité du contenu, des cosmétiques et des compétences se débloque uniquement par le jeu et l'exploration.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-dragon feature-icon"></i>
+                    <h3 class="feature-title mc-font">RPG INEDIT : AVENTHYR</h3>
+                    <p class="feature-desc">
+                        Explorez des donjons sur mesure, complétez des quêtes épiques, maîtrisez de puissantes magies et forgez votre propre destinée dans notre monde fantastique.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-people-group feature-icon"></i>
+                    <h3 class="feature-title mc-font">COMMUNAUTE CELESTIA</h3>
+                    <p class="feature-desc">
+                        Un serveur Discord chaleureux, un staff actif et à l'écoute, et des événements réguliers pour rassembler les joueurs dans la meilleure ambiance.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <!-- PAGE 2: NOS JEUX -->
+        <section id="page-jeux" class="page-content">
+            <div class="section-header">
+                <h2 class="section-title mc-font">NOS MODES DE JEU</h2>
+                <p class="section-subtitle">Découvrez les mondes et aventures disponibles sur le serveur AxeCraft.</p>
             </div>
 
-            <h1 class="hero-title mc-font">REJOINS LE ROYAUME <span>AXECRAFT</span></h1>
-            <p class="section-header mc-font" style="margin-bottom: 0;">SERVEUR 100% FREE-TO-PLAY • AUCUN ACHAT • 100% MERITE</p>
-
-            <!-- BOÎTE IP CLICABLE -->
-            <div class="mc-panel ip-click-card" id="mainIpBox" onclick="copyIP()">
-                <div>
-                    <div style="font-size: 11px; color: var(--text-muted); text-align: left;" class="mc-font">IP DE CONNEXION (v26.3)</div>
-                    <div class="ip-display mc-font" id="ipText">play.axecraft.fr</div>
-                </div>
-                <div class="mc-button mc-font" id="copyBtn" style="color: var(--diamond-cyan);">
-                    <i class="fa-solid fa-copy"></i> COPIER L'IP
-                </div>
-            </div>
-
-            <div class="features-grid">
-                <div class="mc-panel feature-box">
-                    <i class="fa-solid fa-gem"></i>
-                    <h3 class="mc-font">0% ACHAT / NO P2W</h3>
-                    <p style="color: var(--text-muted); font-size: 14px;">Aucune boutique en argent réel. Tout se débloque en explorant, en combattant et en accomplissant des quêtes.</p>
-                </div>
-                <div class="mc-panel feature-box">
-                    <i class="fa-solid fa-bolt"></i>
-                    <h3 class="mc-font">OPTIMISE VERSION 26.3</h3>
-                    <p style="color: var(--text-muted); font-size: 14px;">Une fluidité exemplaire et des mécaniques sur-mesure spécialement créées pour notre communauté.</p>
-                </div>
-                <div class="mc-panel feature-box">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <h3 class="mc-font">EQUIPE ACTIVE</h3>
-                    <p style="color: var(--text-muted); font-size: 14px;">Un staff structuré et à l'écoute pour assurer la sécurité et l'accompagnement de chaque joueur.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= PAGE 2 : NOS JEUX ================= -->
-    <section id="jeux" class="page">
-        <div class="section-header">
-            <h2 class="mc-font">NOS MODES DE JEUX</h2>
-            <p class="mc-font">DECOUVRE LES DIFFERENTS ROYAUMES D'AXECRAFT</p>
-        </div>
-
-        <div class="games-selection-grid">
-            <!-- JEU 1 : AVENTHYR -->
-            <div class="mc-panel game-showcase-card">
-                <div class="game-img-box" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800');">
-                    <span class="game-status-badge mc-font" style="color: var(--mc-green); border-color: var(--mc-green);">
-                        <i class="fa-solid fa-circle-dot"></i> EN LIGNE
-                    </span>
-                </div>
-                <div class="game-card-body">
-                    <h3 class="mc-font">AVENTHYR</h3>
-                    <p>Plongez dans notre jeu de rôle médiéval fantastique. Éveillez-vous amnésique dans un monde magique et forgez votre propre destinée.</p>
-                    <button class="mc-button mc-font" onclick="navigateTo('aventhyr')" style="color: var(--diamond-cyan); width: 100%;">
-                        <i class="fa-solid fa-book-open"></i> DECOUVRIR AVENTHYR
+            <div class="game-banner">
+                <span class="game-badge mc-font">DISPONIBLE MAINTENANT</span>
+                <h3 class="game-title mc-font">AVENTHYR : L'EPOPEE RPG</h3>
+                <p style="color: var(--text-muted); max-width: 700px; line-height: 1.6;">
+                    Réveillez-vous amnésique dans un univers enchanteur et mystérieux. Apprenez la magie, affrontez des créatures redoutables et découvrez les secrets ancestraux d'Aventhyr.
+                </p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                    <button class="btn-action mc-font" onclick="navigateTo('aventhyr')">
+                        <i class="fa-solid fa-circle-info"></i> DECOUVRIR AVENTHYR
+                    </button>
+                    <button class="btn-action btn-diamond mc-font" onclick="startAdventure()">
+                        <i class="fa-solid fa-play"></i> COMMENCER L'AVENTURE
                     </button>
                 </div>
             </div>
+        </section>
 
-            <!-- JEU 2 : PROCHAIN PROJET -->
-            <div class="mc-panel game-showcase-card" style="opacity: 0.85;">
-                <div class="game-img-box" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800'); filter: grayscale(40%);">
-                    <span class="game-status-badge mc-font" style="color: var(--cherry-pink); border-color: var(--cherry-pink);">
-                        <i class="fa-solid fa-hammer"></i> EN DEVELOPPEMENT
-                    </span>
+        <!-- PAGE 3: AVENTHYR DEDICATED PAGE -->
+        <section id="page-aventhyr" class="page-content">
+            <div style="margin-bottom: 25px;">
+                <button class="btn-action mc-font" style="padding: 8px 16px; font-size: 0.8rem;" onclick="navigateTo('jeux')">
+                    <i class="fa-solid fa-arrow-left"></i> RETOUR AUX JEUX
+                </button>
+            </div>
+
+            <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                <span class="version-tag mc-font" style="margin-bottom: 10px; display: inline-block;">MODE DE JEU RPG</span>
+                <h2 class="section-title mc-font" style="font-size: 2.8rem;">AVENTHYR</h2>
+                <p class="section-subtitle" style="margin: 0; max-width: 800px;">
+                    Vous vous éveillez sans aucun souvenir de votre passé dans un royaume fantastique baigné de mystères.
+                </p>
+            </div>
+
+            <div class="grid-3" style="margin-top: 20px; margin-bottom: 40px;">
+                <div class="feature-card">
+                    <i class="fa-solid fa-scroll feature-icon"></i>
+                    <h3 class="feature-title mc-font">QUETES NARRATIVES</h3>
+                    <p class="feature-desc">
+                        Rencontrez des dizaines de personnages non-joueurs, prenez des décisions cruciales et levez le voile sur les mystères d'Aventhyr.
+                    </p>
                 </div>
-                <div class="game-card-body">
-                    <h3 class="mc-font" style="color: var(--cherry-pink);">NOUVEAU MONDE</h3>
-                    <p>L'équipe AxeCraft prépare activement une seconde expérience inédite qui viendra bientôt enrichir nos serveurs.</p>
-                    <button class="mc-button mc-font" disabled style="opacity: 0.5; cursor: not-allowed; width: 100%;">
-                        <i class="fa-solid fa-lock"></i> BIENTOT DISPONIBLE
-                    </button>
+                <div class="feature-card">
+                    <i class="fa-solid fa-wand-magic-sparkles feature-icon"></i>
+                    <h3 class="feature-title mc-font">SYSTEME DE MAGIE</h3>
+                    <p class="feature-desc">
+                        Débloquez des sorts élémentaires, confectionnez des bâtons magiques et adaptez vos incantations selon votre style de combat.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-dungeon feature-icon"></i>
+                    <h3 class="feature-title mc-font">DONJONS & BOSS</h3>
+                    <p class="feature-desc">
+                        Parcourez des ruines oubliées et des cryptes souterraines en solitaire ou en groupe pour terrasser des boss légendaires.
+                    </p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- ================= PAGE SPECIALE : AVENTHYR (DETAILS) ================= -->
-    <section id="aventhyr" class="page">
-        <div class="back-nav-box">
-            <button class="mc-button mc-font" onclick="navigateTo('jeux')">
-                <i class="fa-solid fa-arrow-left"></i> RETOUR A LA LISTE DES JEUX
-            </button>
-        </div>
+            <div style="text-align: center; background: var(--bg-card); border: 2px solid var(--wood-border); padding: 40px; border-radius: 16px;">
+                <h3 class="mc-font" style="font-size: 1.8rem; color: var(--cherry-pink); margin-bottom: 15px;">PRET A ECRIRE VOTRE HISTOIRE ?</h3>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 25px;">
+                    Rejoignez le serveur Minecraft dès maintenant en utilisant l'adresse IP ci-dessous.
+                </p>
+                <button class="btn-action btn-diamond mc-font" style="font-size: 1.1rem; padding: 14px 32px;" onclick="startAdventure()">
+                    <i class="fa-solid fa-compass"></i> COMMENCER L'AVENTURE
+                </button>
+            </div>
+        </section>
 
-        <div class="mc-panel aventhyr-hero-banner">
-            <span class="aventhyr-tag mc-font">EXPERIENCE RPG MEDIEVAL FANTASTIQUE</span>
-            <h2 class="mc-font">EVEILLEZ-VOUS EN TERRE D'AVENTHYR</h2>
-            <p class="aventhyr-story">
-                Arraché soudainement à votre réalité et à votre vie d'origine, vous reprenez conscience au cœur des terres mystiques d'<strong>Aventhyr</strong>. Dans ce monde vibrant peuplé de créatures légendaires, de factions rivales et de magies oubliées, votre passé s'est effacé, mais votre nouvelle destinée reste entièrement à écrire.
-            </p>
-            <!-- BOUTON QUI REDIRIGE VERS L'IP SUR L'ACCUEIL AVEC ANIMATION -->
-            <button class="mc-button mc-font" onclick="startAdventure()" style="color: var(--diamond-cyan); padding: 14px 28px; font-size: 16px;">
-                <i class="fa-solid fa-compass"></i> COMMENCER L'AVENTURE
-            </button>
-        </div>
-
-        <!-- PILIERS DU JEU -->
-        <div class="aventhyr-pillars">
-            <div class="mc-panel pillar-card">
-                <i class="fa-solid fa-scroll"></i>
-                <h4 class="mc-font">QUETES ET NARRATION</h4>
-                <p>Découvrez une histoire captivante au fil de vos rencontres avec les habitants d'Aventhyr. Vos choix façonneront votre réputation.</p>
+        <!-- PAGE 4: REGLEMENTS -->
+        <section id="page-reglements" class="page-content">
+            <div class="section-header">
+                <span class="version-tag mc-font" style="margin-bottom: 12px; display: inline-block;">AXECRAFT • GROUPE CELESTIA</span>
+                <h2 class="section-title mc-font">REGLEMENTS OFFICIELS</h2>
+                <p class="section-subtitle">
+                    Pour assurer l'harmonie de la communauté et une utilisation adéquate de nos plateformes, chaque joueur doit prendre connaissance des règles et s'engager à les respecter. En cas d'abus causant du tort à autrui, l'ignorance du règlement ne sera pas acceptée.
+                </p>
             </div>
 
-            <div class="mc-panel pillar-card">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <h4 class="mc-font">MAGIE ET ARTEFACTS</h4>
-                <p>Maîtrisez des sorts antiques, forgez des armes légendaires inspirées des reliques de diamant et perfectionnez vos statistiques de combat.</p>
+            <!-- Rules Switcher Tabs -->
+            <div class="rules-tab-container">
+                <button id="tab-btn-mc" class="rules-tab-btn active mc-font" onclick="switchRulesTab('mc')">
+                    <i class="fa-solid fa-cube"></i> REGLEMENT MINECRAFT
+                </button>
+                <button id="tab-btn-discord" class="rules-tab-btn mc-font" onclick="switchRulesTab('discord')">
+                    <i class="fa-brands fa-discord"></i> REGLEMENT DISCORD
+                </button>
             </div>
 
-            <div class="mc-panel pillar-card">
-                <i class="fa-solid fa-dungeon"></i>
-                <h4 class="mc-font">DONJONS ANCESTRAUX</h4>
-                <p>Aventurez-vous en solo ou en groupe dans des ruines interdites et affrontez des boss aux mécaniques stratégiques redoutables.</p>
+            <!-- MINECRAFT RULES -->
+            <div id="rules-group-mc" class="rules-group active">
+                <div class="rules-preamble">
+                    <strong>Bienvenue sur le serveur officiel d'AxeCraft (Groupe Celestia) !</strong><br>
+                    Le respect mutuel et le fair-play sont les piliers de notre serveur. Les décisions de l'équipe d'administration et de modération sont définitives.
+                </div>
+
+                <div class="rules-grid">
+                    <!-- Article I -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">I</span>
+                            <h4 class="rule-title">Respect des autres joueurs</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Tout comportement insultant, haineux ou discriminatoire est <span class="rule-warning">strictement interdit</span>.</p>
+                            <p>Respectez les autres joueurs, qu'il s'agisse de leur style de jeu ou de leurs choix.</p>
+                            <p>Aucun harcèlement ne sera toléré, qu'il soit direct ou indirect (notamment via la commande <code>/msg</code>).</p>
+                        </div>
+                    </div>
+
+                    <!-- Article II -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">II</span>
+                            <h4 class="rule-title">Langage et comportement</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Utilisez un langage approprié. Le spam, les insultes graves et le langage offensant sont interdits.</p>
+                            <p>Évitez les discussions politiques ou religieuses qui pourraient créer des tensions au sein du chat.</p>
+                            <p>Le respect de la diversité d'opinions et d'identités est essentiel au bon vivre ensemble.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article III -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">III</span>
+                            <h4 class="rule-title">Griefing & Protection</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Le griefing est <span class="rule-warning">strictement interdit</span> si et seulement si votre base est protégée via la commande <code>/claim</code>.</p>
+                            <p>Si un territoire n'est <span class="rule-highlight">pas claim</span>, le griefing y est alors toléré.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article IV -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">IV</span>
+                            <h4 class="rule-title">Triche et utilisation de mods</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>L’utilisation de mods, clients modifiés ou ressources procurant un avantage injuste est <span class="rule-warning">strictement interdite</span> (X-Ray, Fly Hack, KillAura, etc.).</p>
+                            <p>Toute triche avérée entraînera un <span class="rule-warning">bannissement immédiat</span>.</p>
+                            <p class="rule-success"><i class="fa-solid fa-check"></i> Exception : L'utilisation de l'auto-click est autorisée uniquement pour les AFK spawners.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article V -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">V</span>
+                            <h4 class="rule-title">Publicité</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>La publicité pour d'autres serveurs, services ou produits est interdite, sauf accord préalable explicite du Staff.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VI -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VI</span>
+                            <h4 class="rule-title">Commerce entre joueurs</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Le commerce entre joueurs doit se faire de manière équitable et honnête.</p>
+                            <p>Les arnaques légères lors des échanges (astuces de prix) sont tolérées tant qu'elles restent dans un cadre de jeu non abusif.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VII -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VII</span>
+                            <h4 class="rule-title">Téléportation & TP-Kill (/tpa)</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Tuer un joueur immédiatement après l'acceptation de sa demande de téléportation (<span class="rule-warning">"TP Kill"</span>) est <span class="rule-warning">strictement interdit</span>.</p>
+                            <p>Ce comportement est considéré comme abusif et constitue un acte d'anti-jeu sanctionnable.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VIII -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VIII</span>
+                            <h4 class="rule-title">Bugs et failles techniques</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Si vous découvrez un bug ou une faille sur le serveur, signalez-le immédiatement aux membres du Staff.</p>
+                            <p>Exploiter un bug pour obtenir un avantage ou dupliquer des ressources est assimilé à de la triche.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article IX -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">IX</span>
+                            <h4 class="rule-title">Sanctions</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>En cas de non-respect des règles, des sanctions proportionnées seront appliquées, allant du simple avertissement au bannissement permanent du serveur.</p>
+                            <p>En cas de question ou réclamation, contactez un membre du Staff.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article X -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">X</span>
+                            <h4 class="rule-title">Administration et décisions</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Les administrateurs et modérateurs sont responsables du bon déroulement du serveur et ont le dernier mot en cas de conflit.</p>
+                            <p>Toute décision prise par le Staff est définitive et doit être respectée.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article XI -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">XI</span>
+                            <h4 class="rule-title">Modifications du règlement</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Si un point n’est pas explicitement mentionné dans ce document, il est impératif de contacter le Staff pour vérifier si une autorisation est requise.</p>
+                            <p>Le Staff se réserve le droit d’ajuster les règles selon les situations non anticipées.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mc-panel pillar-card">
-                <i class="fa-solid fa-earth-americas"></i>
-                <h4 class="mc-font">UN MONDE FASCINANT</h4>
-                <p>Des cités fortifiées aux biomes florissants de cerisiers, explorez des environnements vivants conçus pour l'immersion totale.</p>
-            </div>
-        </div>
+            <!-- DISCORD RULES -->
+            <div id="rules-group-discord" class="rules-group">
+                <div class="rules-preamble">
+                    <strong>Bienvenue sur le Discord officiel d'AxeCraft | Groupe Celestia !</strong><br>
+                    Cet espace d'échange communautaire requiert le respect de chacun et l'application stricte des consignes ci-dessous.
+                </div>
 
-        <!-- GALERIE VISUELLE -->
-        <div class="section-header" style="margin-bottom: 20px;">
-            <h3 class="mc-font" style="font-size: 24px; color: var(--diamond-cyan);">APERÇU D'AVENTHYR</h3>
-        </div>
-        <div class="gallery-grid">
-            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600');">
-                <span class="gallery-caption mc-font">✦ Les Terres Sauvages</span>
-            </div>
-            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600');">
-                <span class="gallery-caption mc-font">✦ Cités Fortifiées</span>
-            </div>
-            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600');">
-                <span class="gallery-caption mc-font">✦ Sanctuaires Antiques</span>
-            </div>
-        </div>
-    </section>
+                <div class="rules-grid">
+                    <!-- Article I -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">I</span>
+                            <h4 class="rule-title">Mention inutile</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Ne mentionnez pas inutilement les membres du <strong>@Staff</strong>.</p>
+                            <p>Adressez-vous à eux uniquement en cas de besoin réel d'assistance ou d'urgence liée au serveur.</p>
+                        </div>
+                    </div>
 
-    <!-- ================= PAGE 3 : RÈGLEMENTS ================= -->
-    <section id="reglements" class="page">
-        <div class="section-header">
-            <h2 class="mc-font">REGLEMENTS OFFICIELS</h2>
-            <p class="mc-font">A LIRE ATTENTIVEMENT POUR UNE EXPERIENCE CONVIVIALE</p>
-        </div>
+                    <!-- Article II -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">II</span>
+                            <h4 class="rule-title">Profils & Pseudonymes</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Évitez d'utiliser des pseudonymes, statuts ou photos de profil offensants, discriminatoires ou à connotation sexuelle.</p>
+                            <p>Privilégiez des pseudonymes simples et lisibles, sans saturation de caractères spéciaux empêchant les mentions.</p>
+                        </div>
+                    </div>
 
-        <div class="rules-grid">
-            <div class="mc-panel rules-box">
-                <h3 class="mc-font" style="color: var(--diamond-cyan);">
-                    <i class="fa-solid fa-cube"></i> EN JEU (MINECRAFT)
+                    <!-- Article III -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">III</span>
+                            <h4 class="rule-title">Demandes financières & Commerce</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Aucune demande d'argent n'est autorisée, sauf dérogation expresse du Staff (dons officiels ou soutien au serveur).</p>
+                            <p>La vente ou l'achat de biens et services réels est interdite.</p>
+                            <p><span class="rule-warning">Achat/Vente de comptes :</span> Toute transaction entraînera un <strong>bannissement définitif</strong> immédiat.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article IV -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">IV</span>
+                            <h4 class="rule-title">Savoir-vivre & Messages Privés</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Respectez les autres membres comme vous souhaitez être respecté.</p>
+                            <p>La modération ne s'immisce pas dans les conversations privées entre joueurs (bloquez les personnes indésirables).</p>
+                            <p>En revanche, tout échange entre un joueur et un modérateur en MP peut être pris en compte par la modération.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article V -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">V</span>
+                            <h4 class="rule-title">Promotions et Spamming</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Le spam, le flood et les messages à répétition sont interdits.</p>
+                            <p>L’auto-promotion (liens de serveurs, vidéos YouTube, etc.) requiert l'accord du Staff, sauf si le contenu est <strong>directement lié à AxeCraft</strong> (ex. : vidéo tournée sur le serveur).</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VI -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VI</span>
+                            <h4 class="rule-title">Discrimination & Harcèlement</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Le harcèlement, la chasse aux sorcières, le sexisme, le racisme, la diffamation et tout comportement contraire aux lois françaises et aux ToS de Discord sont <span class="rule-warning">strictement interdits</span>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VII -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VII</span>
+                            <h4 class="rule-title">Neutralité des débats</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Aucun message ou débat à caractère politique, religieux ou social clivant ne doit être publié sur le serveur.</p>
+                            <p>L'humour relatif au jeu ou au serveur est accepté tant qu'il reste bon enfant et modéré.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article VIII -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">VIII</span>
+                            <h4 class="rule-title">Contenu obscène et violent</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Tout contenu violent, obscène ou pornographique (NSFW/NSFL), qu'il soit textuel ou visuel, est interdit.</p>
+                            <p>Les contenus illégaux entraîneront un <span class="rule-warning">bannissement immédiat et définitif</span> ainsi qu'un signalement aux autorités compétentes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Article IX -->
+                    <div class="rule-card">
+                        <div class="rule-card-header">
+                            <span class="rule-num mc-font">IX</span>
+                            <h4 class="rule-title">Piratage et responsabilité</h4>
+                        </div>
+                        <div class="rule-body">
+                            <p>Aucune tentative de piratage n'est tolérée (bannissement définitif et poursuites judiciaires possibles).</p>
+                            <p>Vous êtes l'unique responsable de la sécurité de votre compte Discord. Le piratage ou prêt de compte ne constitue pas une excuse valable.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 5: EQUIPE & CONTACTS -->
+        <section id="page-contacts" class="page-content">
+            <div class="section-header">
+                <h2 class="section-title mc-font">RESEAUX SOCIAUX OFFICIELS</h2>
+                <p class="section-subtitle">Suivez nos actualités, rejoignez la communauté et échangez avec l'équipe.</p>
+            </div>
+
+            <!-- Social Media Buttons -->
+            <div class="socials-grid">
+                <a href="https://discord.gg/2uTGnYXwBX" target="_blank" class="social-btn">
+                    <i class="fa-brands fa-discord social-icon" style="color: #5865F2;"></i>
+                    <div class="social-text">
+                        <h4 class="mc-font">DISCORD</h4>
+                        <p>AxeCraft</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/@axecraft01" target="_blank" class="social-btn">
+                    <i class="fa-brands fa-youtube social-icon" style="color: #FF0000;"></i>
+                    <div class="social-text">
+                        <h4 class="mc-font">YOUTUBE</h4>
+                        <p>@axecraft01</p>
+                    </div>
+                </a>
+                <a href="https://www.instagram.com/axecraft.fr/" target="_blank" class="social-btn">
+                    <i class="fa-brands fa-instagram social-icon" style="color: #E4405F;"></i>
+                    <div class="social-text">
+                        <h4 class="mc-font">INSTAGRAM</h4>
+                        <p>@axecraft.fr</p>
+                    </div>
+                </a>
+                <a href="https://www.tiktok.com/@play.axecraft.fr" target="_blank" class="social-btn">
+                    <i class="fa-brands fa-tiktok social-icon" style="color: #00f2fe;"></i>
+                    <div class="social-text">
+                        <h4 class="mc-font">TIKTOK</h4>
+                        <p>@play.axecraft.fr</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Active Staff Members -->
+            <div class="section-header" style="margin-top: 50px;">
+                <h2 class="section-title mc-font">MEMBRES DU STAFF</h2>
+                <p class="section-subtitle">Cliquez sur un membre pour afficher son skin 3D interactif et sa fiche.</p>
+            </div>
+
+            <div class="staff-grid">
+                <!-- MrAshitaka -->
+                <div class="staff-card" onclick="openSkinModal('MrAshitaka', 'FONDATEUR', '#e03131', 'Fondateur principal d\'AxeCraft. Coordonne le projet global et le développement du serveur.')">
+                    <img src="https://minotar.net/helm/MrAshitaka/100.png" alt="MrAshitaka" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">MrAshitaka</span>
+                        <span class="staff-role-badge mc-font" style="background: #e03131;">FONDATEUR</span>
+                    </div>
+                </div>
+
+                <!-- Trinja77 -->
+                <div class="staff-card" onclick="openSkinModal('Trinja77', 'FONDATEUR', '#e03131', 'Fondateur d\'AxeCraft. Supervise la gestion technique, les infrastructures et la vision du jeu.')">
+                    <img src="https://minotar.net/helm/Trinja77/100.png" alt="Trinja77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">Trinja77</span>
+                        <span class="staff-role-badge mc-font" style="background: #e03131;">FONDATEUR</span>
+                    </div>
+                </div>
+
+                <!-- Ninjabrine77 -->
+                <div class="staff-card" onclick="openSkinModal('Ninjabrine77', 'CO-FONDATEUR', '#e03131', 'Co-Fondateur d\'AxeCraft. Participe à l\'administration et à l\'organisation des événements.')">
+                    <img src="https://minotar.net/helm/Ninjabrine77/100.png" alt="Ninjabrine77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">Ninjabrine77</span>
+                        <span class="staff-role-badge mc-font" style="background: #e03131;">CO-FONDATEUR</span>
+                    </div>
+                </div>
+
+                <!-- Perruche_ -->
+                <div class="staff-card" onclick="openSkinModal('Perruche_', 'RESPONSABLE', '#e03131', 'Responsable au sein d\'AxeCraft. Veille au bon fonctionnement général et à l\'encadrement du staff.')">
+                    <img src="https://minotar.net/helm/Perruche_/100.png" alt="Perruche_" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">Perruche_</span>
+                        <span class="staff-role-badge mc-font" style="background: #e03131;">RESPONSABLE</span>
+                    </div>
+                </div>
+
+                <!-- GMBL77 -->
+                <div class="staff-card" onclick="openSkinModal('GMBL77', 'SUPER-DEVELOPPEUR', '#9775fa', 'Super-Développeur du serveur. Conçoit les plugins exclusifs, les mécaniques RPG et les systèmes réseau.')">
+                    <img src="https://minotar.net/helm/GMBL77/100.png" alt="GMBL77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">GMBL77</span>
+                        <span class="staff-role-badge mc-font" style="background: #9775fa;">SUPER-DEVELOPPEUR</span>
+                    </div>
+                </div>
+
+                <!-- Zarkitooo -->
+                <div class="staff-card" onclick="openSkinModal('Zarkitooo', 'SUPER-MODERATEUR', '#f08c00', 'Super-Modérateur d\'AxeCraft. Assure la cohésion, la sécurité de la communauté et le respect des règles.')">
+                    <img src="https://minotar.net/helm/Zarkitooo/100.png" alt="Zarkitooo" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
+                    <div class="staff-info">
+                        <span class="staff-name">Zarkitooo</span>
+                        <span class="staff-role-badge mc-font" style="background: #f08c00;">SUPER-MODERATEUR</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Role Hierarchy -->
+            <div class="hierarchy-box">
+                <h3 class="mc-font" style="font-size: 1.3rem; color: var(--cherry-pink); margin-bottom: 8px;">
+                    <i class="fa-solid fa-sitemap"></i> HIERARCHIE DES ROLES
                 </h3>
-                <ul class="rules-list">
-                    <li><strong>Triche & Clients Modifiés :</strong> Tout mod offrant un avantage déloyal (X-Ray, Fly, KillAura, AutoClicker) entraîne un bannissement définitif.</li>
-                    <li><strong>Griefing & Vol :</strong> Interdit dans les zones de jeu protégées et dans les villes d'Aventhyr.</li>
-                    <li><strong>Bugs & Exploits :</strong> L'exploitation de failles ou de duplications en version 26.3 est formellement interdite.</li>
-                    <li><strong>Tchat & Comportement :</strong> Les insultes, le harcèlement, le spam ou les provocations ne sont pas tolérés.</li>
-                </ul>
-            </div>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">
+                    Structure complète des rôles techniques et d'encadrement sur AxeCraft.
+                </p>
 
-            <div class="mc-panel rules-box">
-                <h3 class="mc-font" style="color: #5865F2;">
-                    <i class="fa-brands fa-discord"></i> DISCORD OFFICIEL
-                </h3>
-                <ul class="rules-list">
-                    <li><strong>Respect Mutuel :</strong> La courtoisie est de mise avec tous les joueurs et les membres de l'équipe.</li>
-                    <li><strong>Organisation :</strong> Merci d'utiliser les salons textuels et vocaux en accord avec leur thème.</li>
-                    <li><strong>Publicité :</strong> Strictement interdite sur les salons publics tout comme en message privé (MP).</li>
-                    <li><strong>Assistance :</strong> En cas de litige ou de problème technique, ouvrez un ticket dans le salon dédié.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= PAGE 4 : CONTACTS & ÉQUIPE ================= -->
-    <section id="contacts" class="page">
-        <div class="section-header">
-            <h2 class="mc-font">NOS CONTACTS ET RESEAUX</h2>
-            <p class="mc-font">REJOINS LA COMMUNAUTE AXECRAFT SUR TOUTES NOS PAGES</p>
-        </div>
-
-        <!-- RÉSEAUX SOCIAUX -->
-        <div class="socials-grid">
-            <a href="https://discord.gg/2uTGnYXwBX" target="_blank" class="mc-panel social-card">
-                <i class="fa-brands fa-discord" style="color: #5865F2;"></i>
-                <strong class="mc-font" style="font-size: 18px;">Discord</strong>
-                <span class="mc-font" style="color: var(--cherry-pink); font-size: 13px; margin-top: 4px;">AxeCraft</span>
-            </a>
-            <a href="https://www.youtube.com/@axecraft01" target="_blank" class="mc-panel social-card">
-                <i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
-                <strong class="mc-font" style="font-size: 18px;">YouTube</strong>
-                <span style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">@axecraft01</span>
-            </a>
-            <a href="https://www.instagram.com/axecraft.fr/" target="_blank" class="mc-panel social-card">
-                <i class="fa-brands fa-instagram" style="color: #e1306c;"></i>
-                <strong class="mc-font" style="font-size: 18px;">Instagram</strong>
-                <span style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">@axecraft.fr</span>
-            </a>
-            <a href="https://www.tiktok.com/@play.axecraft.fr" target="_blank" class="mc-panel social-card">
-                <i class="fa-brands fa-tiktok" style="color: #25f4ee;"></i>
-                <strong class="mc-font" style="font-size: 18px;">TikTok</strong>
-                <span style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">@play.axecraft.fr</span>
-            </a>
-        </div>
-
-        <!-- STAFF ACTIF CLIQUABLE -->
-        <div class="section-header" style="margin-bottom: 25px;">
-            <h3 class="mc-font" style="font-size: 28px; color: var(--diamond-cyan);">L'EQUIPE EN POSTE</h3>
-            <p class="mc-font">CLIQUE SUR UN MEMBRE POUR AFFICHER SON SKIN EN 3D</p>
-        </div>
-
-        <div class="staff-grid">
-            <!-- MrAshitaka -->
-            <div class="mc-panel member-card" onclick="openMemberModal('MrAshitaka')">
-                <img src="https://minotar.net/helm/MrAshitaka/100.png" class="member-avatar" alt="MrAshitaka">
-                <div class="member-name mc-font">MrAshitaka</div>
-                <span class="role-badge mc-font" style="color: var(--role-red);">Fondateur</span>
-            </div>
-
-            <!-- Trinja77 -->
-            <div class="mc-panel member-card" onclick="openMemberModal('Trinja77')">
-                <img src="https://minotar.net/helm/Trinja77/100.png" class="member-avatar" alt="Trinja77">
-                <div class="member-name mc-font">Trinja77</div>
-                <span class="role-badge mc-font" style="color: var(--role-red);">Fondateur</span>
-            </div>
-
-            <!-- Ninjabrine77 -->
-            <div class="mc-panel member-card" onclick="openMemberModal('Ninjabrine77')">
-                <img src="https://minotar.net/helm/Ninjabrine77/100.png" class="member-avatar" alt="Ninjabrine77">
-                <div class="member-name mc-font">Ninjabrine77</div>
-                <span class="role-badge mc-font" style="color: var(--role-red);">Co-Fondateur</span>
-            </div>
-
-            <!-- Perruche_ -->
-            <div class="mc-panel member-card" onclick="openMemberModal('Perruche_')">
-                <img src="https://minotar.net/helm/Perruche_/100.png" class="member-avatar" alt="Perruche_">
-                <div class="member-name mc-font">Perruche_</div>
-                <span class="role-badge mc-font" style="color: var(--role-red);">Responsable</span>
-            </div>
-
-            <!-- GMBL77 -->
-            <div class="mc-panel member-card" onclick="openMemberModal('GMBL77')">
-                <img src="https://minotar.net/helm/GMBL77/100.png" class="member-avatar" alt="GMBL77">
-                <div class="member-name mc-font">GMBL77</div>
-                <span class="role-badge mc-font" style="color: var(--role-purple);">Super-Developpeur</span>
-            </div>
-
-            <!-- Zarkitooo -->
-            <div class="mc-panel member-card" onclick="openMemberModal('Zarkitooo')">
-                <img src="https://minotar.net/helm/Zarkitooo/100.png" class="member-avatar" alt="Zarkitooo">
-                <div class="member-name mc-font">Zarkitooo</div>
-                <span class="role-badge mc-font" style="color: var(--role-orange);">Super-Moderateur</span>
-            </div>
-        </div>
-
-        <!-- GRILLE COMPLÈTE DES RÔLES -->
-        <div class="mc-panel roles-container">
-            <h4 class="mc-font" style="font-size: 20px; color: var(--diamond-cyan);">HIERARCHIE DES ROLES</h4>
-            <p class="mc-font" style="font-size: 13px; color: var(--text-muted);">STRUCTURE OFFICIELLE DES GRADES D'AXECRAFT</p>
-
-            <div class="roles-grid">
-                <!-- Rôles Direction & Super -->
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-red);"><i class="fa-solid fa-shield"></i> Fondateur</span>
-                    <span class="role-status filled mc-font">2 Membres</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-red);"><i class="fa-solid fa-shield"></i> Co-Fondateur</span>
-                    <span class="role-status filled mc-font">1 Membre</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-red);"><i class="fa-solid fa-shield"></i> Responsable</span>
-                    <span class="role-status filled mc-font">1 Membre</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-orange);"><i class="fa-solid fa-shield"></i> Super-Moderateur</span>
-                    <span class="role-status filled mc-font">1 Membre</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-purple);"><i class="fa-solid fa-shield"></i> Super-Developpeur</span>
-                    <span class="role-status filled mc-font">1 Membre</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-blue);"><i class="fa-solid fa-shield"></i> Super-Artiste</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-green);"><i class="fa-solid fa-shield"></i> Super-Architecte</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-lime);"><i class="fa-solid fa-shield"></i> Super-Compositeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-
-                <!-- Rôles Confirmés -->
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-orange);"><i class="fa-solid fa-shield"></i> Moderateur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-purple);"><i class="fa-solid fa-shield"></i> Developpeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-blue);"><i class="fa-solid fa-shield"></i> Artiste</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-green);"><i class="fa-solid fa-shield"></i> Architecte</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-lime);"><i class="fa-solid fa-shield"></i> Compositeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-gold);"><i class="fa-solid fa-shield"></i> Contributeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-
-                <!-- Mini Rôles -->
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-orange);"><i class="fa-solid fa-shield"></i> Mini-Moderateur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-purple);"><i class="fa-solid fa-shield"></i> Mini-Developpeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-blue);"><i class="fa-solid fa-shield"></i> Mini-Artiste</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-green);"><i class="fa-solid fa-shield"></i> Mini-Architecte</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-lime);"><i class="fa-solid fa-shield"></i> Mini-Compositeur</span>
-                    <span class="role-status mc-font">0</span>
-                </div>
-                <div class="role-item">
-                    <span class="role-title mc-font" style="color: var(--role-mini-gold);"><i class="fa-solid fa-shield"></i> Mini-Contributeur</span>
-                    <span class="role-status mc-font">0</span>
+                <div class="hierarchy-grid">
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #e03131;"></span>Fondateur</div><span class="role-count">2</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #e03131;"></span>Co-Fondateur</div><span class="role-count">1</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #e03131;"></span>Responsable</div><span class="role-count">1</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #9775fa;"></span>Super-Développeur</div><span class="role-count">1</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #f08c00;"></span>Super-Modérateur</div><span class="role-count">1</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #4c6ef5;"></span>Super-Artiste</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #2f9e44;"></span>Super-Architecte</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #82c91e;"></span>Super-Compositeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #f08c00;"></span>Modérateur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #9775fa;"></span>Développeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #4c6ef5;"></span>Artiste</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #2f9e44;"></span>Architecte</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #82c91e;"></span>Compositeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #fcc419;"></span>Contributeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #e59972;"></span>Mini-Modérateur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #cc5de8;"></span>Mini-Développeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #74c0fc;"></span>Mini-Artiste</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #63e6be;"></span>Mini-Architecte</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #a9e34b;"></span>Mini-Compositeur</div><span class="role-count">0</span></div>
+                    <div class="hierarchy-item"><div class="role-tag"><span class="role-indicator" style="background: #ffe066;"></span>Mini-Contributeur</div><span class="role-count">0</span></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ================= MODALE SKIN 3D ================= -->
-    <div id="staffModal" class="modal" onclick="modalBackgroundClick(event)">
-        <div class="mc-panel modal-box">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <div class="modal-flex">
-                <div class="modal-3d-view">
-                    <canvas id="skin_container"></canvas>
-                    <span class="mc-font" style="font-size: 11px; color: var(--cherry-pink); margin-top: 6px;">
-                        <i class="fa-solid fa-arrows-spin"></i> PIVOTE ET ZOOME A LA SOURIS
-                    </span>
-                </div>
-                <div class="modal-info">
-                    <h3 id="modalName" class="mc-font">PSEUDO</h3>
-                    <span id="modalRole" class="role-badge mc-font">ROLE</span>
-                    <div style="height: 2px; background: #282a38; margin: 15px 0;"></div>
-                    <p id="modalDesc" style="color: var(--text-muted); font-size: 14px; line-height: 1.7;">Description...</p>
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-content">
+                <span class="footer-brand mc-font">AXECRAFT • GROUPE CELESTIA</span>
+                <p class="footer-text">Serveur Minecraft Free-to-Play version 26.3 • IP : <strong>play.axecraft.fr</strong></p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- 3D SKIN VIEWER MODAL -->
+    <div id="skinModal" class="modal-backdrop" onclick="handleBackdropClick(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeSkinModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="skin-canvas-container">
+                <canvas id="skinCanvas3D"></canvas>
+            </div>
+            <div class="skin-details">
+                <span id="modalRoleBadge" class="staff-role-badge mc-font" style="background: #e03131; margin-bottom: 12px;">ROLE</span>
+                <h3 id="modalStaffName" class="mc-font" style="font-size: 1.8rem; color: var(--cherry-pink); margin-bottom: 12px;">Joueur</h3>
+                <p id="modalStaffDesc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;">Description du membre.</p>
+                <div style="font-size: 0.8rem; color: var(--diamond); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-arrows-rotate"></i> Cliquez et glissez sur le skin pour le faire pivoter
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <p class="mc-font">&copy; 2024 AXECRAFT (v26.3) • SERVEUR MINECRAFT</p>
-    </footer>
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="toast mc-font">
+        <i class="fa-solid fa-circle-check" style="color: var(--diamond); font-size: 1.2rem;"></i>
+        <span id="toastMessage">IP COPIEE : PLAY.AXECRAFT.FR</span>
+    </div>
 
-    <!-- LOGIQUE JAVASCRIPT -->
+    <!-- SCRIPTS -->
     <script>
-        // --- CHUTE DE PÉTALES PIXELISÉS ---
-        const canvas = document.getElementById('sakura-canvas');
-        const ctx = canvas.getContext('2d');
-        let petals = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Petal {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * -canvas.height;
-                this.size = Math.random() * 5 + 4;
-                this.speedX = Math.random() * 1.5 - 0.5;
-                this.speedY = Math.random() * 1.5 + 1;
-                this.color = Math.random() > 0.4 ? '#f7a8b8' : '#ffd6e0';
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.y > canvas.height) {
-                    this.y = -10;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.size), Math.floor(this.size));
-            }
-        }
-
-        for (let i = 0; i < 40; i++) petals.push(new Petal());
-
-        function animatePetals() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            petals.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animatePetals);
-        }
-        animatePetals();
-
-        // --- DONNÉES DU STAFF ---
-        const staffData = {
-            "MrAshitaka": {
-                name: "MrAshitaka",
-                role: "Fondateur",
-                color: "#e03131",
-                desc: "Fondateur et créateur d'AxeCraft. Responsable de la vision globale du serveur, de la direction stratégique et de la coordination de l'ensemble des projets."
-            },
-            "Trinja77": {
-                name: "Trinja77",
-                role: "Fondateur",
-                color: "#e03131",
-                desc: "Fondateur d'AxeCraft. En charge de la gestion générale du serveur, de la stabilité des infrastructures et de la communauté."
-            },
-            "Ninjabrine77": {
-                name: "Ninjabrine77",
-                role: "Co-Fondateur",
-                color: "#e03131",
-                desc: "Co-Fondateur d'AxeCraft. Travaille en étroite collaboration avec les Fondateurs pour superviser le bon déroulement de chaque projet."
-            },
-            "Perruche_": {
-                name: "Perruche_",
-                role: "Responsable",
-                color: "#e03131",
-                desc: "Responsable principal du serveur. Il coordonne les équipes internes, veille à la communication et à la vie quotidienne du serveur."
-            },
-            "GMBL77": {
-                name: "GMBL77",
-                role: "Super-Developpeur",
-                color: "#9775fa",
-                desc: "Super-Développeur en charge du développement technique d'AxeCraft. Il conçoit et optimise les systèmes exclusifs à la version 26.3."
-            },
-            "Zarkitooo": {
-                name: "Zarkitooo",
-                role: "Super-Moderateur",
-                color: "#f08c00",
-                desc: "Super-Modérateur veillant à la paix et au respect des règles. Il encadre la modération et garantit une expérience saine aux joueurs."
-            }
-        };
-
-        // --- NOTIFICATION TOAST ---
-        function showToast() {
-            const toast = document.getElementById("toast-alert");
-            toast.classList.add("show");
-            setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3500);
-        }
-
-        // --- NAVIGATION AVEC SAUVEGARDE AU RELOAD ---
+        // 1. PAGE NAVIGATION & RELOAD RETENTION
         function navigateTo(pageId) {
-            window.location.hash = pageId;
-        }
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active-page'));
 
-        function renderPage() {
-            let hash = window.location.hash.replace('#', '');
-            if (!hash || !document.getElementById(hash)) {
-                hash = 'accueil';
-            }
-
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(hash).classList.add('active');
-
-            document.querySelectorAll('.mc-button').forEach(btn => btn.classList.remove('active'));
-            
-            // Si sur Aventhyr, active l'onglet "Nos Jeux" dans la navbar
-            if (hash === 'aventhyr') {
-                const btnJeux = document.getElementById('btn-jeux');
-                if (btnJeux) btnJeux.classList.add('active');
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active-page');
             } else {
-                const activeBtn = document.getElementById('btn-' + hash);
-                if (activeBtn) activeBtn.classList.add('active');
+                document.getElementById('page-accueil').classList.add('active-page');
+                pageId = 'accueil';
             }
 
-            window.scrollTo(0, 0);
+            // Update Nav buttons
+            const navButtons = document.querySelectorAll('.nav-item button');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            const activeNavBtn = document.getElementById('nav-btn-' + pageId);
+            if (activeNavBtn) activeNavBtn.classList.add('active');
+
+            // Close mobile menu
+            document.getElementById('navLinks').classList.remove('mobile-open');
+
+            // Update URL hash without forcing scroll
+            history.replaceState(null, null, '#' + pageId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.addEventListener('DOMContentLoaded', renderPage);
-        window.addEventListener('hashchange', renderPage);
+        function toggleMobileNav() {
+            document.getElementById('navLinks').classList.toggle('mobile-open');
+        }
 
-        // --- FONCTION DE COPIE D'IP ---
-        function copyIP() {
-            const ip = document.getElementById("ipText").innerText;
-            navigator.clipboard.writeText(ip);
-            
-            const btn = document.getElementById("copyBtn");
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> COPIÉ !';
-            btn.style.color = "#55ff55";
+        // Initialize on load according to Hash
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentHash = window.location.hash.replace('#', '');
+            if (currentHash) {
+                navigateTo(currentHash);
+            } else {
+                navigateTo('accueil');
+            }
+            initPetalsCanvas();
+        });
 
-            showToast();
+        // 2. RULES TABS SWITCHER
+        function switchRulesTab(tab) {
+            document.querySelectorAll('.rules-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.rules-group').forEach(grp => grp.classList.remove('active'));
 
+            if (tab === 'mc') {
+                document.getElementById('tab-btn-mc').classList.add('active');
+                document.getElementById('rules-group-mc').classList.add('active');
+            } else {
+                document.getElementById('tab-btn-discord').classList.add('active');
+                document.getElementById('rules-group-discord').classList.add('active');
+            }
+        }
+
+        // 3. COPY IP & TOAST
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.innerText = msg;
+            toast.style.display = 'flex';
             setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-copy"></i> COPIER L\'IP';
-                btn.style.color = "var(--diamond-cyan)";
-            }, 2500);
+                toast.style.display = 'none';
+            }, 3200);
         }
 
-        // --- COMMENCER L'AVENTURE : REDIRECTION + PULSATION + COPIE ---
+        function copyIP() {
+            const ip = "play.axecraft.fr";
+            navigator.clipboard.writeText(ip).then(() => {
+                showToast("IP COPIEE : " + ip.toUpperCase());
+            }).catch(() => {
+                showToast("SERVEUR : PLAY.AXECRAFT.FR");
+            });
+        }
+
+        // 4. START ADVENTURE INTERACTION
         function startAdventure() {
             navigateTo('accueil');
-            
             setTimeout(() => {
                 const ipBox = document.getElementById("mainIpBox");
                 if (ipBox) {
                     ipBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Déclenche la copie et l'alerte
                     copyIP();
-
-                    // Animation de pulsation lumineuse sur la boîte IP
                     ipBox.classList.remove("highlight-pulse");
-                    void ipBox.offsetWidth; // Force le reflow CSS
+                    void ipBox.offsetWidth; // Trigger reflow
                     ipBox.classList.add("highlight-pulse");
-
                     setTimeout(() => {
                         ipBox.classList.remove("highlight-pulse");
                     }, 2500);
                 }
-            }, 100);
+            }, 150);
         }
 
-        // --- VISIONNEUSE 3D ---
+        // 5. 3D SKIN VIEWER MODAL
         let skinViewer = null;
 
-        function initViewer() {
+        function initSkinViewer() {
             if (!skinViewer) {
-                const canvas = document.getElementById("skin_container");
+                const canvas = document.getElementById('skinCanvas3D');
                 skinViewer = new skinview3d.SkinViewer({
                     canvas: canvas,
-                    width: 250,
-                    height: 310
+                    width: 300,
+                    height: 360,
+                    skin: "https://mineskin.eu/skin/Steve"
                 });
-
-                skinViewer.camera.position.set(0, 0, 65);
-                skinViewer.zoom = 0.85;
-
-                const controls = skinview3d.createOrbitControls(skinViewer);
-                controls.enableRotate = true;
-                controls.enableZoom = true;
-                controls.enablePan = false;
-
-                const anim = new skinview3d.IdleAnimation();
-                anim.speed = 0.7;
-                skinViewer.animation = anim;
+                skinViewer.camera.position.set(0, 0, 60);
+                skinViewer.animation = new skinview3d.WalkingAnimation();
+                skinViewer.animation.speed = 0.6;
+                skinViewer.autoRotate = true;
+                skinViewer.autoRotateSpeed = 0.8;
             }
         }
 
-        function openMemberModal(username) {
-            const member = staffData[username];
-            if (!member) return;
+        function openSkinModal(username, roleName, roleColor, description) {
+            initSkinViewer();
+            
+            document.getElementById('modalStaffName').innerText = username;
+            const badge = document.getElementById('modalRoleBadge');
+            badge.innerText = roleName;
+            badge.style.background = roleColor;
+            document.getElementById('modalStaffDesc').innerText = description;
 
-            document.getElementById("modalName").innerText = member.name.toUpperCase();
-            const roleEl = document.getElementById("modalRole");
-            roleEl.innerText = member.role.toUpperCase();
-            roleEl.style.color = member.color;
-            roleEl.style.borderColor = member.color;
-            document.getElementById("modalDesc").innerText = member.desc;
+            // Load skin texture via CORS-friendly API with fallback
+            const skinUrl = `https://mineskin.eu/skin/${username}`;
+            skinViewer.loadSkin(skinUrl);
 
-            document.getElementById("staffModal").classList.add("show");
-
-            initViewer();
-            skinViewer.loadSkin("https://mineskin.eu/skin/" + username);
+            document.getElementById('skinModal').classList.add('open');
         }
 
-        function closeModal() {
-            document.getElementById("staffModal").classList.remove("show");
+        function closeSkinModal() {
+            document.getElementById('skinModal').classList.remove('open');
         }
 
-        function modalBackgroundClick(e) {
-            if (e.target.id === "staffModal") closeModal();
+        function handleBackdropClick(e) {
+            if (e.target.id === 'skinModal') {
+                closeSkinModal();
+            }
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") closeModal();
-        });
+        // 6. CHERRY GROVE PETALS ANIMATION
+        function initPetalsCanvas() {
+            const canvas = document.getElementById('petals-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const petals = [];
+            const petalCount = 38;
+
+            class Petal {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * -height * 0.5;
+                    this.size = Math.random() * 8 + 6;
+                    this.speedY = Math.random() * 1.2 + 0.8;
+                    this.speedX = Math.random() * 1.5 - 0.75;
+                    this.rotation = Math.random() * 360;
+                    this.rotSpeed = (Math.random() - 0.5) * 2;
+                    this.opacity = Math.random() * 0.45 + 0.35;
+                    this.color = Math.random() > 0.4 ? '#ffb7c5' : '#f8c8dc';
+                }
+
+                update() {
+                    this.y += this.speedY;
+                    this.x += this.speedX + Math.sin(this.y * 0.01) * 0.5;
+                    this.rotation += this.rotSpeed;
+
+                    if (this.y > height + 20 || this.x < -20 || this.x > width + 20) {
+                        this.reset();
+                        this.y = -10;
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate((this.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < petalCount; i++) {
+                petals.push(new Petal());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                petals.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
     </script>
 </body>
 </html>
