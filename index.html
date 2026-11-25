@@ -15,7 +15,7 @@
 
     <style>
         /* ==========================================================================
-           PALETTE DE COULEURS - INSPIRÉE DU LOGO
+           PALETTE DE COULEURS - THEME AXECRAFT (Hache Diamant + Cerisier)
            ========================================================================== */
         :root {
             --diamond-cyan: #4dedf4;
@@ -27,7 +27,6 @@
             --cherry-dark: #8d3a56;
 
             --mc-gui-bg: #1e1f29;
-            --mc-gui-inner: #15161e;
             --mc-border-light: #4e5166;
             --mc-border-dark: #0a0b0f;
             --mc-green: #55ff55;
@@ -277,6 +276,7 @@
             text-shadow: 4px 4px 0px var(--diamond-dark);
         }
 
+        /* Boîte IP avec animation quand ciblée */
         .ip-click-card {
             margin-top: 30px;
             padding: 16px 35px;
@@ -292,6 +292,17 @@
             border-color: var(--diamond-cyan);
             box-shadow: 0 0 20px rgba(77, 237, 244, 0.3);
             transform: scale(1.02);
+        }
+
+        /* Effet de mise en avant quand on clique sur "Commencer l'Aventure" */
+        @keyframes ipPulseAnimation {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--diamond-cyan); border-color: var(--diamond-cyan); }
+            50% { transform: scale(1.08); box-shadow: 0 0 45px var(--diamond-cyan), 0 0 25px var(--cherry-pink); border-color: var(--cherry-pink); }
+            100% { transform: scale(1); box-shadow: 0 0 15px var(--diamond-cyan); border-color: var(--diamond-cyan); }
+        }
+
+        .highlight-pulse {
+            animation: ipPulseAnimation 0.8s ease-in-out 3;
         }
 
         .ip-display {
@@ -326,13 +337,75 @@
             margin-bottom: 10px;
         }
 
-        /* --- PAGE JEU UNIQUE : AVENTHYR --- */
-        .aventhyr-hero {
+        /* --- PAGE NOS JEUX --- */
+        .games-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .game-showcase-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .game-showcase-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--diamond-cyan);
+        }
+
+        .game-img-box {
+            height: 220px;
             position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .game-status-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid currentColor;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .game-card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .game-card-body h3 {
+            font-size: 24px;
+            color: var(--diamond-cyan);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .game-card-body p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        /* --- PAGE AVENTHYR (DÉTAILS COMPLETS) --- */
+        .back-nav-box {
+            margin-bottom: 25px;
+        }
+
+        .aventhyr-hero-banner {
+            position: relative;
+            padding: 60px 40px;
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 40px;
-            padding: 60px 40px;
             background: linear-gradient(to right, rgba(14, 15, 22, 0.95) 45%, rgba(14, 15, 22, 0.5) 100%),
                         url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920') center/cover;
         }
@@ -343,20 +416,20 @@
             color: var(--diamond-cyan);
             border: 1px solid var(--diamond-cyan);
             padding: 4px 12px;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 15px;
         }
 
-        .aventhyr-hero h2 {
-            font-size: 48px;
+        .aventhyr-hero-banner h2 {
+            font-size: 46px;
             color: var(--diamond-cyan);
             text-shadow: 3px 3px 0px var(--diamond-dark);
             margin-bottom: 15px;
         }
 
-        .aventhyr-pitch {
-            max-width: 650px;
-            font-size: 16px;
+        .aventhyr-story {
+            max-width: 680px;
+            font-size: 15px;
             line-height: 1.8;
             color: var(--text-light);
             margin-bottom: 25px;
@@ -366,6 +439,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
+            margin-bottom: 40px;
         }
 
         .pillar-card {
@@ -389,6 +463,39 @@
             font-size: 14px;
             color: var(--text-muted);
             line-height: 1.6;
+        }
+
+        /* Galerie Aventhyr */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #2d2f3d;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+        }
+
+        .gallery-item::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+        }
+
+        .gallery-caption {
+            position: relative;
+            z-index: 2;
+            color: var(--cherry-pink);
+            font-size: 13px;
         }
 
         /* --- RÈGLEMENTS --- */
@@ -613,6 +720,32 @@
             margin-bottom: 8px;
         }
 
+        /* --- NOTIFICATION TOAST VISUELLE --- */
+        #toast-alert {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #14151f;
+            border: 3px solid var(--mc-green);
+            box-shadow: 0 0 25px rgba(85, 255, 85, 0.4);
+            padding: 14px 28px;
+            border-radius: 4px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #ffffff;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        #toast-alert.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         /* FOOTER */
         footer {
             position: relative;
@@ -632,8 +765,8 @@
             .rules-grid { grid-template-columns: 1fr; }
             .modal-flex { flex-direction: column; text-align: center; }
             .ip-click-card { flex-direction: column; gap: 10px; }
-            .aventhyr-hero { padding: 30px 20px; }
-            .aventhyr-hero h2 { font-size: 32px; }
+            .aventhyr-hero-banner { padding: 30px 20px; }
+            .aventhyr-hero-banner h2 { font-size: 32px; }
         }
     </style>
 </head>
@@ -641,6 +774,15 @@
 
     <!-- Effet de pétales de cerisier qui tombent -->
     <canvas id="sakura-canvas"></canvas>
+
+    <!-- NOTIFICATION FLOTTANTE MINECRAFT -->
+    <div id="toast-alert" class="mc-panel">
+        <i class="fa-solid fa-circle-check" style="font-size: 24px; color: var(--mc-green);"></i>
+        <div>
+            <div class="mc-font" style="color: var(--mc-green); font-size: 14px;">IP COPIEE DANS LE PRESSE-PAPIER !</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Lance ta version 26.3 et colle l'IP pour nous rejoindre.</div>
+        </div>
+    </div>
 
     <!-- NAVIGATION -->
     <nav>
@@ -651,7 +793,7 @@
 
         <ul class="nav-links">
             <li><button class="mc-button mc-font" id="btn-accueil" onclick="navigateTo('accueil')">ACCUEIL</button></li>
-            <li><button class="mc-button mc-font" id="btn-jeux" onclick="navigateTo('jeux')">AVENTHYR</button></li>
+            <li><button class="mc-button mc-font" id="btn-jeux" onclick="navigateTo('jeux')">NOS JEUX</button></li>
             <li><button class="mc-button mc-font" id="btn-reglements" onclick="navigateTo('reglements')">REGLEMENTS</button></li>
             <li><button class="mc-button mc-font" id="btn-contacts" onclick="navigateTo('contacts')">NOS CONTACTS</button></li>
         </ul>
@@ -669,8 +811,8 @@
             <h1 class="hero-title mc-font">REJOINS LE ROYAUME <span>AXECRAFT</span></h1>
             <p class="section-header mc-font" style="margin-bottom: 0;">SERVEUR 100% FREE-TO-PLAY • AUCUN ACHAT • 100% MERITE</p>
 
-            <!-- BOÎTE IP -->
-            <div class="mc-panel ip-click-card" onclick="copyIP()">
+            <!-- BOÎTE IP CLICABLE -->
+            <div class="mc-panel ip-click-card" id="mainIpBox" onclick="copyIP()">
                 <div>
                     <div style="font-size: 11px; color: var(--text-muted); text-align: left;" class="mc-font">IP DE CONNEXION (v26.3)</div>
                     <div class="ip-display mc-font" id="ipText">play.axecraft.fr</div>
@@ -700,26 +842,69 @@
         </div>
     </section>
 
-    <!-- ================= PAGE 2 : AVENTHYR (RPG) ================= -->
+    <!-- ================= PAGE 2 : NOS JEUX ================= -->
     <section id="jeux" class="page">
         <div class="section-header">
-            <h2 class="mc-font">AVENTHYR</h2>
-            <p class="mc-font">NOTRE JEU DE ROLE MEDIEVAL FANTASTIQUE</p>
+            <h2 class="mc-font">NOS MODES DE JEUX</h2>
+            <p class="mc-font">DECOUVRE LES DIFFERENTS ROYAUMES D'AXECRAFT</p>
         </div>
 
-        <!-- BANNIÈRE IMMERSIVE -->
-        <div class="mc-panel aventhyr-hero">
-            <span class="aventhyr-tag mc-font">EXPERIENCE RPG UNIQUE</span>
-            <h2 class="mc-font">EVEILLEZ-VOUS EN TERRE INCONNUE</h2>
-            <p class="aventhyr-pitch">
-                Arraché soudainement à votre réalité et à votre vie d'origine, vous reprenez conscience au cœur des terres mystiques d'<strong>Aventhyr</strong>. Dans ce monde vibrant peuplé de créatures légendaires, de factions rivales et de magies oubliées, votre passé s'est effacé, mais votre nouvelle destinée reste entièrement à écrire.
-            </p>
-            <div class="mc-button mc-font" onclick="copyIP()" style="color: var(--diamond-cyan);">
-                <i class="fa-solid fa-compass"></i> COMMENCER L'AVENTURE
+        <div class="games-selection-grid">
+            <!-- JEU 1 : AVENTHYR -->
+            <div class="mc-panel game-showcase-card">
+                <div class="game-img-box" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800');">
+                    <span class="game-status-badge mc-font" style="color: var(--mc-green); border-color: var(--mc-green);">
+                        <i class="fa-solid fa-circle-dot"></i> EN LIGNE
+                    </span>
+                </div>
+                <div class="game-card-body">
+                    <h3 class="mc-font">AVENTHYR</h3>
+                    <p>Plongez dans notre jeu de rôle médiéval fantastique. Éveillez-vous amnésique dans un monde magique et forgez votre propre destinée.</p>
+                    <button class="mc-button mc-font" onclick="navigateTo('aventhyr')" style="color: var(--diamond-cyan); width: 100%;">
+                        <i class="fa-solid fa-book-open"></i> DECOUVRIR AVENTHYR
+                    </button>
+                </div>
+            </div>
+
+            <!-- JEU 2 : PROCHAIN PROJET -->
+            <div class="mc-panel game-showcase-card" style="opacity: 0.85;">
+                <div class="game-img-box" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800'); filter: grayscale(40%);">
+                    <span class="game-status-badge mc-font" style="color: var(--cherry-pink); border-color: var(--cherry-pink);">
+                        <i class="fa-solid fa-hammer"></i> EN DEVELOPPEMENT
+                    </span>
+                </div>
+                <div class="game-card-body">
+                    <h3 class="mc-font" style="color: var(--cherry-pink);">NOUVEAU MONDE</h3>
+                    <p>L'équipe AxeCraft prépare activement une seconde expérience inédite qui viendra bientôt enrichir nos serveurs.</p>
+                    <button class="mc-button mc-font" disabled style="opacity: 0.5; cursor: not-allowed; width: 100%;">
+                        <i class="fa-solid fa-lock"></i> BIENTOT DISPONIBLE
+                    </button>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- LES PILIERS DU JEU -->
+    <!-- ================= PAGE SPECIALE : AVENTHYR (DETAILS) ================= -->
+    <section id="aventhyr" class="page">
+        <div class="back-nav-box">
+            <button class="mc-button mc-font" onclick="navigateTo('jeux')">
+                <i class="fa-solid fa-arrow-left"></i> RETOUR A LA LISTE DES JEUX
+            </button>
+        </div>
+
+        <div class="mc-panel aventhyr-hero-banner">
+            <span class="aventhyr-tag mc-font">EXPERIENCE RPG MEDIEVAL FANTASTIQUE</span>
+            <h2 class="mc-font">EVEILLEZ-VOUS EN TERRE D'AVENTHYR</h2>
+            <p class="aventhyr-story">
+                Arraché soudainement à votre réalité et à votre vie d'origine, vous reprenez conscience au cœur des terres mystiques d'<strong>Aventhyr</strong>. Dans ce monde vibrant peuplé de créatures légendaires, de factions rivales et de magies oubliées, votre passé s'est effacé, mais votre nouvelle destinée reste entièrement à écrire.
+            </p>
+            <!-- BOUTON QUI REDIRIGE VERS L'IP SUR L'ACCUEIL AVEC ANIMATION -->
+            <button class="mc-button mc-font" onclick="startAdventure()" style="color: var(--diamond-cyan); padding: 14px 28px; font-size: 16px;">
+                <i class="fa-solid fa-compass"></i> COMMENCER L'AVENTURE
+            </button>
+        </div>
+
+        <!-- PILIERS DU JEU -->
         <div class="aventhyr-pillars">
             <div class="mc-panel pillar-card">
                 <i class="fa-solid fa-scroll"></i>
@@ -743,6 +928,22 @@
                 <i class="fa-solid fa-earth-americas"></i>
                 <h4 class="mc-font">UN MONDE FASCINANT</h4>
                 <p>Des cités fortifiées aux biomes florissants de cerisiers, explorez des environnements vivants conçus pour l'immersion totale.</p>
+            </div>
+        </div>
+
+        <!-- GALERIE VISUELLE -->
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3 class="mc-font" style="font-size: 24px; color: var(--diamond-cyan);">APERÇU D'AVENTHYR</h3>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600');">
+                <span class="gallery-caption mc-font">✦ Les Terres Sauvages</span>
+            </div>
+            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600');">
+                <span class="gallery-caption mc-font">✦ Cités Fortifiées</span>
+            </div>
+            <div class="gallery-item" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600');">
+                <span class="gallery-caption mc-font">✦ Sanctuaires Antiques</span>
             </div>
         </div>
     </section>
@@ -1072,6 +1273,15 @@
             }
         };
 
+        // --- NOTIFICATION TOAST ---
+        function showToast() {
+            const toast = document.getElementById("toast-alert");
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3500);
+        }
+
         // --- NAVIGATION AVEC SAUVEGARDE AU RELOAD ---
         function navigateTo(pageId) {
             window.location.hash = pageId;
@@ -1087,8 +1297,15 @@
             document.getElementById(hash).classList.add('active');
 
             document.querySelectorAll('.mc-button').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById('btn-' + hash);
-            if (activeBtn) activeBtn.classList.add('active');
+            
+            // Si sur Aventhyr, active l'onglet "Nos Jeux" dans la navbar
+            if (hash === 'aventhyr') {
+                const btnJeux = document.getElementById('btn-jeux');
+                if (btnJeux) btnJeux.classList.add('active');
+            } else {
+                const activeBtn = document.getElementById('btn-' + hash);
+                if (activeBtn) activeBtn.classList.add('active');
+            }
 
             window.scrollTo(0, 0);
         }
@@ -1096,7 +1313,7 @@
         window.addEventListener('DOMContentLoaded', renderPage);
         window.addEventListener('hashchange', renderPage);
 
-        // --- COPIER L'IP ---
+        // --- FONCTION DE COPIE D'IP ---
         function copyIP() {
             const ip = document.getElementById("ipText").innerText;
             navigator.clipboard.writeText(ip);
@@ -1105,10 +1322,36 @@
             btn.innerHTML = '<i class="fa-solid fa-check"></i> COPIÉ !';
             btn.style.color = "#55ff55";
 
+            showToast();
+
             setTimeout(() => {
                 btn.innerHTML = '<i class="fa-solid fa-copy"></i> COPIER L\'IP';
                 btn.style.color = "var(--diamond-cyan)";
             }, 2500);
+        }
+
+        // --- COMMENCER L'AVENTURE : REDIRECTION + PULSATION + COPIE ---
+        function startAdventure() {
+            navigateTo('accueil');
+            
+            setTimeout(() => {
+                const ipBox = document.getElementById("mainIpBox");
+                if (ipBox) {
+                    ipBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Déclenche la copie et l'alerte
+                    copyIP();
+
+                    // Animation de pulsation lumineuse sur la boîte IP
+                    ipBox.classList.remove("highlight-pulse");
+                    void ipBox.offsetWidth; // Force le reflow CSS
+                    ipBox.classList.add("highlight-pulse");
+
+                    setTimeout(() => {
+                        ipBox.classList.remove("highlight-pulse");
+                    }, 2500);
+                }
+            }, 100);
         }
 
         // --- VISIONNEUSE 3D ---
