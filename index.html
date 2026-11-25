@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AxeCraft - Serveur Minecraft (v26.3)</title>
+    <!-- Icônes et Polices -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CONFIGURATION DES COULEURS --- */
+        :root {
+            --primary: #00ff88; /* Vert Néon */
+            --secondary: #00b8ff; /* Bleu Néon */
+            --dark: #0f1016;
+            --card-bg: rgba(25, 27, 38, 0.75);
+            --text: #ffffff;
+            --text-muted: #a0a5b5;
+            --discord: #5865F2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            /* Image de fond globale */
+            background-image: linear-gradient(to bottom, rgba(15, 16, 22, 0.8), rgba(15, 16, 22, 0.95)), 
+                              url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- BARRE DE NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(15, 16, 22, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .version-badge {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 0 15px rgba(255, 65, 108, 0.4);
+        }
+
+        /* --- GESTION DES PAGES --- */
+        .page {
+            display: none; /* Caché par défaut */
+            padding: 60px 8%;
+            flex: 1;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block; /* Affiché quand actif */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            font-size: 18px;
+        }
+
+        /* --- PAGE 1 : ACCUEIL --- */
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .hero h1 {
+            font-size: 70px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .server-info-box {
+            display: inline-flex;
+            align-items: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            padding: 15px 30px;
+            border-radius: 50px;
+            gap: 20px;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .server-info-box:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .ip-address {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .copy-badge {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        /* --- PAGE 2 : NOS JEUX --- */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .game-card {
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            height: 350px;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.15);
+        }
+
+        .game-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            transition: 0.4s;
+        }
+
+        .game-card:hover .game-bg {
+            transform: scale(1.1);
+        }
+
+        .game-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(15,16,22,1) 10%, rgba(15,16,22,0.2) 100%);
+            z-index: -1;
+        }
+
+        .game-content h3 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* --- PAGE 3 : RÈGLEMENTS --- */
+        .rules-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .rules-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            border-top: 4px solid var(--primary);
+        }
+
+        .rules-box.discord-rules {
+            border-top-color: var(--discord);
+        }
+
+        .rules-box h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+        .rules-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        .rules-list li::before {
+            content: "➤";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .discord-rules .rules-list li::before {
+            color: var(--discord);
+        }
+
+        /* --- PAGE 4 : CONTACTS --- */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            padding: 40px 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: 0.3s;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .contact-card i {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        /* Staff Section */
+        .staff-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .staff-card {
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border-radius: 15px;
+            text-align: center;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .staff-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .role {
+            font-size: 12px;
+            background: rgba(0, 184, 255, 0.2);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 10, 15, 0.9);
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: auto;
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .hero h1 { font-size: 40px; }
+            .rules-container { grid-template-columns: 1fr; }
+            .server-info-box { flex-direction: column; border-radius: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="logo" onclick="changePage('accueil')">
+            <i class="fa-solid fa-axe"></i> AXECRAFT
+        </div>
+        <ul class="nav-links">
+            <li><button class="nav-btn active" onclick="changePage('accueil', this)">Accueil</button></li>
+            <li><button class="nav-btn" onclick="changePage('jeux', this)">Nos Jeux</button></li>
+            <li><button class="nav-btn" onclick="changePage('reglements', this)">Règlements</button></li>
+            <li><button class="nav-btn" onclick="changePage('contacts', this)">Nos Contacts</button></li>
+        </ul>
+        <div class="version-badge">Version : 26.3</div>
+    </nav>
+
+    <!-- ================= PAGE 1 : ACCUEIL ================= -->
+    <section id="accueil" class="page active">
+        <div class="hero">
+            <h1>L'AVENTURE <span>AXECRAFT</span><br>COMMENCE ICI</h1>
+            <p class="page-subtitle">Un serveur 100% Gratuit (Free-to-Play), créé par des passionnés pour des passionnés.</p>
+            
+            <!-- Boite IP et Version -->
+            <div class="server-info-box" onclick="copyIP()">
+                <i class="fa-solid fa-gamepad" style="font-size: 28px; color: var(--primary);"></i>
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted); text-align: left;">IP DU SERVEUR (Version 26.3)</div>
+                    <div class="ip-address" id="ipText">play.axecraft.fr</div>
+                </div>
+                <div class="copy-badge" id="copyBtn">COPIER L'IP</div>
+            </div>
+
+            <!-- Points forts (Sans achat) -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-ban"></i>
+                    <h3>Aucun Achat (No Pay-to-Win)</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Ici, la carte bancaire ne sert à rien. Tout se gagne en jouant !</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>Version 26.3 Optimisée</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Une fluidité parfaite et des fonctionnalités exclusives à notre version.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>Communauté Active</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Un staff à l'écoute et des événements réguliers sur le serveur.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE 2 : NOS JEUX ================= -->
+    <section id="jeux" class="page">
+        <h2 class="page-title">Nos Modes de Jeux</h2>
+        <p class="page-subtitle">Découvre les différents univers disponibles sur AxeCraft.</p>
+
+        <div class="games-grid">
+            <!-- Jeu 1 -->
+            <div class="game-card">
+                <div class="game-bg" style="background-image: url('https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=800');"></div>
+                <div class="game-overlay"></div>
+                <div class="game-content">
+                    <h3><i class="fa-solid fa-tree"></i> Survie Vanilla+</h3>
+                    <p>Construis ta base, commerce avec les autres joueurs et explore un monde généré sur-mesure en version 26.3.</p>
+                </div>
+            </div>
+
+            <!-- Jeu 2 -->
+            <div class="game-card">
+                <div class="game-bg" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800');"></div>
+                <div class="game-overlay"></div>
+                <div class="game-content">
+                    <h3><i class="fa-solid fa-khanda"></i> PvP Factions</h3>
+                    <p>Crée ton clan, déclare la guerre à tes ennemis et pille leurs bases pour devenir la faction numéro 1.</p>
+                </div>
+            </div>
+
+            <!-- Jeu 3 -->
+            <div class="game-card">
+                <div class="game-bg" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800');"></div>
+                <div class="game-overlay"></div>
+                <div class="game-content">
+                    <h3><i class="fa-solid fa-cubes"></i> Mini-Jeux & Events</h3>
+                    <p>Des parcours de jump, du Spleef, des tournois PvP et des événements organisés chaque week-end.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE 3 : RÈGLEMENTS ================= -->
+    <section id="reglements" class="page">
+        <h2 class="page-title">Règlements Officiels</h2>
+        <p class="page-subtitle">Pour garder une bonne ambiance, merci de respecter ces règles.</p>
+
+        <div class="rules-container">
+            <!-- Règlement Minecraft -->
+            <div class="rules-box">
+                <h3><i class="fa-solid fa-cube" style="color: var(--primary);"></i> Règlement En Jeu (Minecraft)</h3>
+                <ul class="rules-list">
+                    <li><strong>Triche interdite :</strong> L'utilisation de X-Ray, Fly, KillAura ou tout autre cheat entraîne un bannissement définitif.</li>
+                    <li><strong>Respect des constructions :</strong> Le Grief (destruction) des zones non-protégées autour du spawn est interdit.</li>
+                    <li><strong>Exploitation de bugs :</strong> Utiliser un bug de la version 26.3 pour dupliquer des objets est sévèrement puni.</li>
+                    <li><strong>Langage :</strong> Pas d'insultes, de spam ou de majuscules abusives dans le tchat du jeu.</li>
+                    <li><strong>Multi-comptes :</strong> Autorisé à condition de ne pas s'en servir pour contourner un ban (Ban Evading).</li>
+                </ul>
+            </div>
+
+            <!-- Règlement Discord -->
+            <div class="rules-box discord-rules">
+                <h3><i class="fa-brands fa-discord" style="color: var(--discord);"></i> Règlement Discord</h3>
+                <ul class="rules-list">
+                    <li><strong>Courtoisie :</strong> Le respect mutuel est obligatoire. Aucun harcèlement, racisme ou propos haineux ne sera toléré.</li>
+                    <li><strong>Salons textuels :</strong> Utilisez les bons salons (ne mettez pas vos commandes de bots dans le salon général).</li>
+                    <li><strong>Publicité :</strong> Il est strictement interdit de faire de la pub pour d'autres serveurs (même en message privé).</li>
+                    <li><strong>Profils :</strong> Les pseudos et photos de profil choquants (NSFW) seront immédiatement modérés.</li>
+                    <li><strong>Mentions :</strong> Ne mentionnez pas (@ping) le Staff sans raison urgente. Ouvrez plutôt un ticket.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE 4 : CONTACTS ================= -->
+    <section id="contacts" class="page">
+        <h2 class="page-title">Nos Contacts</h2>
+        <p class="page-subtitle">Une question ? Un problème ? Rejoins-nous sur nos réseaux !</p>
+
+        <div class="contact-grid">
+            <a href="https://discord.gg/tonlien" target="_blank" class="contact-card">
+                <i class="fa-brands fa-discord" style="color: var(--discord);"></i>
+                <h3>Serveur Discord</h3>
+                <p style="color: var(--text-muted); margin-top: 5px;">Le moyen le plus rapide pour parler au staff et aux joueurs.</p>
+            </a>
+
+            <a href="mailto:contact@axecraft.fr" class="contact-card">
+                <i class="fa-solid fa-envelope" style="color: var(--primary);"></i>
+                <h3>Email Support</h3>
+                <p style="color: var(--text-muted); margin-top: 5px;">contact@axecraft.fr<br>Réponse sous 24h à 48h.</p>
+            </a>
+
+            <a href="https://youtube.com" target="_blank" class="contact-card">
+                <i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
+                <h3>Chaîne YouTube</h3>
+                <p style="color: var(--text-muted); margin-top: 5px;">Découvre les trailers et les résumés des événements.</p>
+            </a>
+        </div>
+
+        <h3 style="text-align: center; font-size: 28px; margin-bottom: 30px;">L'Équipe AxeCraft</h3>
+        <div class="staff-grid">
+            <div class="staff-card">
+                <!-- L'API Minotar permet d'afficher la tête d'un joueur Minecraft. Change "Notch" par ton pseudo ! -->
+                <img src="https://minotar.net/helm/Notch/100.png" alt="Skin">
+                <h4>TonPseudo</h4>
+                <span class="role">Fondateur</span>
+            </div>
+            <div class="staff-card">
+                <img src="https://minotar.net/helm/Jeb_/100.png" alt="Skin">
+                <h4>PseudoAdmin</h4>
+                <span class="role">Administrateur</span>
+            </div>
+            <div class="staff-card">
+                <img src="https://minotar.net/helm/Alex/100.png" alt="Skin">
+                <h4>PseudoModo</h4>
+                <span class="role">Modérateur</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 <strong>AxeCraft</strong> (Version 26.3) - Serveur 100% Gratuit. Non affilié à Mojang AB.</p>
+    </footer>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script>
+        // Fonction pour changer de page sans recharger le site
+        function changePage(pageId, btnElement = null) {
+            // 1. Cacher toutes les pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // 2. Afficher la page demandée
+            document.getElementById(pageId).classList.add('active');
+
+            // 3. Mettre à jour le bouton actif dans le menu
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if(btnElement) {
+                btnElement.classList.add('active');
+            } else {
+                // Si clic sur le logo, active le bouton Accueil
+                buttons[0].classList.add('active');
+            }
+            
+            // Remonter en haut de la page
+            window.scrollTo(0, 0);
+        }
+
+        // Fonction pour copier l'IP
+        function copyIP() {
+            const ip = document.getElementById("ipText").innerText;
+            navigator.clipboard.writeText(ip);
+            
+            const btn = document.getElementById("copyBtn");
+            btn.innerText = "IP COPIÉE !";
+            btn.style.background = "#ffffff";
+
+            setTimeout(() => {
+                btn.innerText = "COPIER L'IP";
+                btn.style.background = "var(--primary)";
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
