@@ -35,7 +35,7 @@
             --wood-light: #3d3128;
             --wood-border: #524235;
             --bg-dark: #0f0d0b;
-            --bg-card: rgba(27, 22, 18, 0.88);
+            --bg-card: rgba(23, 18, 14, 0.90);
             --text-main: #f3efe6;
             --text-muted: #b8aba0;
         }
@@ -51,14 +51,60 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(232, 140, 168, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(77, 238, 234, 0.06) 0%, transparent 40%),
-                linear-gradient(180deg, #120e0c 0%, #080706 100%);
             min-height: 100vh;
         }
 
-        /* Minecraft Font Utilities (strictly no accents in mc-font) */
+        /* CINEMATIC ANIMATED BACKGROUND */
+        .bg-cinematic {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: -6%;
+            left: -6%;
+            width: 112%;
+            height: 112%;
+            background-image: url('background.jpg');
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            animation: cinematicMove 32s ease-in-out infinite alternate;
+            filter: brightness(0.48) contrast(1.15) saturate(1.1);
+            will-change: transform;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 25%, rgba(20, 16, 13, 0.3) 0%, rgba(10, 8, 6, 0.85) 100%),
+                linear-gradient(180deg, rgba(15, 13, 11, 0.6) 0%, rgba(10, 8, 6, 0.95) 100%);
+        }
+
+        @keyframes cinematicMove {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+            50% {
+                transform: scale(1.08) translate(-1.5%, -1%);
+            }
+            100% {
+                transform: scale(1.04) translate(1.5%, 0.5%);
+            }
+        }
+
+        /* Minecraft Font Utilities (strictly ASCII uppercase, no accented letters) */
         .mc-font {
             font-family: 'Minecraft', monospace, sans-serif;
             letter-spacing: 0.5px;
@@ -88,7 +134,7 @@
         header {
             position: sticky;
             top: 0;
-            background: rgba(20, 16, 13, 0.94);
+            background: rgba(18, 14, 11, 0.94);
             backdrop-filter: blur(12px);
             border-bottom: 2px solid var(--wood-border);
             z-index: 100;
@@ -107,21 +153,22 @@
         .brand-link {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
             text-decoration: none;
             color: inherit;
         }
 
         .brand-logo {
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
-            filter: drop-shadow(0 0 8px var(--cherry-glow));
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 10px var(--cherry-glow));
             transition: transform 0.3s ease;
         }
 
         .brand-link:hover .brand-logo {
-            transform: scale(1.08) rotate(-4deg);
+            transform: scale(1.1) rotate(-4deg);
         }
 
         .brand-name {
@@ -215,11 +262,12 @@
         }
 
         .hero-logo {
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
+            image-rendering: pixelated;
             filter: drop-shadow(0 0 25px var(--cherry-glow));
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             animation: floatLogo 4s ease-in-out infinite;
         }
 
@@ -238,9 +286,10 @@
         .hero-subtitle {
             font-size: 1.15rem;
             color: var(--text-muted);
-            max-width: 650px;
+            max-width: 680px;
             margin-bottom: 30px;
             line-height: 1.6;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
         }
 
         .f2p-badge {
@@ -255,7 +304,8 @@
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(77, 238, 234, 0.15);
+            box-shadow: 0 0 15px rgba(77, 238, 234, 0.2);
+            backdrop-filter: blur(6px);
         }
 
         /* SERVER IP BOX */
@@ -267,13 +317,14 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             max-width: 520px;
             width: 100%;
             justify-content: space-between;
+            backdrop-filter: blur(8px);
         }
 
         .ip-card:hover {
@@ -340,6 +391,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(8px);
         }
 
         .feature-card::before {
@@ -399,8 +451,9 @@
         .section-subtitle {
             color: var(--text-muted);
             font-size: 1rem;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* RULES SECTION */
@@ -439,8 +492,8 @@
         }
 
         .rules-preamble {
-            background: rgba(248, 200, 220, 0.05);
-            border: 1px solid rgba(248, 200, 220, 0.2);
+            background: rgba(248, 200, 220, 0.06);
+            border: 1px solid rgba(248, 200, 220, 0.25);
             border-left: 4px solid var(--cherry-pink);
             padding: 18px 22px;
             border-radius: 8px;
@@ -448,6 +501,7 @@
             color: var(--text-muted);
             font-size: 0.92rem;
             line-height: 1.6;
+            backdrop-filter: blur(6px);
         }
 
         .rules-preamble strong {
@@ -477,6 +531,7 @@
             transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
+            backdrop-filter: blur(8px);
         }
 
         .rule-card:hover {
@@ -542,7 +597,7 @@
 
         /* JEUX & AVENTHYR */
         .game-banner {
-            background: linear-gradient(180deg, rgba(20,16,13,0.7) 0%, rgba(10,8,6,0.95) 100%),
+            background: linear-gradient(180deg, rgba(23,18,14,0.85) 0%, rgba(12,9,7,0.95) 100%),
                         radial-gradient(circle at top right, rgba(232, 140, 168, 0.25), transparent 60%);
             border: 2px solid var(--wood-border);
             border-radius: 16px;
@@ -552,6 +607,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            backdrop-filter: blur(8px);
         }
 
         .game-badge {
@@ -619,6 +675,7 @@
             gap: 18px;
             cursor: pointer;
             transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
         }
 
         .staff-card:hover {
@@ -663,6 +720,7 @@
             border: 2px solid var(--wood-border);
             border-radius: 14px;
             padding: 30px;
+            backdrop-filter: blur(8px);
         }
 
         .hierarchy-grid {
@@ -673,7 +731,7 @@
         }
 
         .hierarchy-item {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.35);
             border: 1px solid var(--wood-border);
             padding: 12px 18px;
             border-radius: 8px;
@@ -724,6 +782,7 @@
             color: var(--text-main);
             text-decoration: none;
             transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
         }
 
         .social-btn:hover {
@@ -926,6 +985,12 @@
 </head>
 <body>
 
+    <!-- CINEMATIC BACKGROUND -->
+    <div class="bg-cinematic">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+
     <!-- Falling Petals Background Canvas -->
     <canvas id="petals-canvas"></canvas>
 
@@ -1125,7 +1190,6 @@
                 </div>
 
                 <div class="rules-grid">
-                    <!-- Article I -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">I</span>
@@ -1138,7 +1202,6 @@
                         </div>
                     </div>
 
-                    <!-- Article II -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">II</span>
@@ -1151,7 +1214,6 @@
                         </div>
                     </div>
 
-                    <!-- Article III -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">III</span>
@@ -1163,7 +1225,6 @@
                         </div>
                     </div>
 
-                    <!-- Article IV -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">IV</span>
@@ -1176,7 +1237,6 @@
                         </div>
                     </div>
 
-                    <!-- Article V -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">V</span>
@@ -1187,7 +1247,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VI -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VI</span>
@@ -1199,7 +1258,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VII -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VII</span>
@@ -1211,7 +1269,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VIII -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VIII</span>
@@ -1223,7 +1280,6 @@
                         </div>
                     </div>
 
-                    <!-- Article IX -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">IX</span>
@@ -1235,7 +1291,6 @@
                         </div>
                     </div>
 
-                    <!-- Article X -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">X</span>
@@ -1247,7 +1302,6 @@
                         </div>
                     </div>
 
-                    <!-- Article XI -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">XI</span>
@@ -1269,7 +1323,6 @@
                 </div>
 
                 <div class="rules-grid">
-                    <!-- Article I -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">I</span>
@@ -1281,7 +1334,6 @@
                         </div>
                     </div>
 
-                    <!-- Article II -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">II</span>
@@ -1293,7 +1345,6 @@
                         </div>
                     </div>
 
-                    <!-- Article III -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">III</span>
@@ -1306,7 +1357,6 @@
                         </div>
                     </div>
 
-                    <!-- Article IV -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">IV</span>
@@ -1319,7 +1369,6 @@
                         </div>
                     </div>
 
-                    <!-- Article V -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">V</span>
@@ -1331,7 +1380,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VI -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VI</span>
@@ -1342,7 +1390,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VII -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VII</span>
@@ -1354,7 +1401,6 @@
                         </div>
                     </div>
 
-                    <!-- Article VIII -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">VIII</span>
@@ -1366,7 +1412,6 @@
                         </div>
                     </div>
 
-                    <!-- Article IX -->
                     <div class="rule-card">
                         <div class="rule-card-header">
                             <span class="rule-num mc-font">IX</span>
@@ -1427,7 +1472,6 @@
             </div>
 
             <div class="staff-grid">
-                <!-- MrAshitaka -->
                 <div class="staff-card" onclick="openSkinModal('MrAshitaka', 'FONDATEUR', '#e03131', 'Fondateur principal d\'AxeCraft. Coordonne le projet global et le développement du serveur.')">
                     <img src="https://minotar.net/helm/MrAshitaka/100.png" alt="MrAshitaka" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1436,7 +1480,6 @@
                     </div>
                 </div>
 
-                <!-- Trinja77 -->
                 <div class="staff-card" onclick="openSkinModal('Trinja77', 'FONDATEUR', '#e03131', 'Fondateur d\'AxeCraft. Supervise la gestion technique, les infrastructures et la vision du jeu.')">
                     <img src="https://minotar.net/helm/Trinja77/100.png" alt="Trinja77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1445,7 +1488,6 @@
                     </div>
                 </div>
 
-                <!-- Ninjabrine77 -->
                 <div class="staff-card" onclick="openSkinModal('Ninjabrine77', 'CO-FONDATEUR', '#e03131', 'Co-Fondateur d\'AxeCraft. Participe à l\'administration et à l\'organisation des événements.')">
                     <img src="https://minotar.net/helm/Ninjabrine77/100.png" alt="Ninjabrine77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1454,7 +1496,6 @@
                     </div>
                 </div>
 
-                <!-- Perruche_ -->
                 <div class="staff-card" onclick="openSkinModal('Perruche_', 'RESPONSABLE', '#e03131', 'Responsable au sein d\'AxeCraft. Veille au bon fonctionnement général et à l\'encadrement du staff.')">
                     <img src="https://minotar.net/helm/Perruche_/100.png" alt="Perruche_" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1463,7 +1504,6 @@
                     </div>
                 </div>
 
-                <!-- GMBL77 -->
                 <div class="staff-card" onclick="openSkinModal('GMBL77', 'SUPER-DEVELOPPEUR', '#9775fa', 'Super-Développeur du serveur. Conçoit les plugins exclusifs, les mécaniques RPG et les systèmes réseau.')">
                     <img src="https://minotar.net/helm/GMBL77/100.png" alt="GMBL77" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1472,7 +1512,6 @@
                     </div>
                 </div>
 
-                <!-- Zarkitooo -->
                 <div class="staff-card" onclick="openSkinModal('Zarkitooo', 'SUPER-MODERATEUR', '#f08c00', 'Super-Modérateur d\'AxeCraft. Assure la cohésion, la sécurité de la communauté et le respect des règles.')">
                     <img src="https://minotar.net/helm/Zarkitooo/100.png" alt="Zarkitooo" class="staff-avatar" onerror="this.src='https://minotar.net/helm/Steve/100.png'">
                     <div class="staff-info">
@@ -1585,7 +1624,6 @@
             document.getElementById('navLinks').classList.toggle('mobile-open');
         }
 
-        // Initialize on load according to Hash
         window.addEventListener('DOMContentLoaded', () => {
             const currentHash = window.location.hash.replace('#', '');
             if (currentHash) {
@@ -1677,7 +1715,6 @@
             badge.style.background = roleColor;
             document.getElementById('modalStaffDesc').innerText = description;
 
-            // Load skin texture via CORS-friendly API with fallback
             const skinUrl = `https://mineskin.eu/skin/${username}`;
             skinViewer.loadSkin(skinUrl);
 
