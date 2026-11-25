@@ -20,7 +20,7 @@
 
     <style>
         :root {
-            /* Palette Mode Sombre (Défaut) */
+            /* Mode Sombre (Défaut) */
             --bg-primary: #0a0c14;
             --bg-secondary: #121624;
             --bg-card: rgba(18, 22, 36, 0.88);
@@ -43,7 +43,7 @@
         }
 
         [data-theme="light"] {
-            /* Palette Mode Clair */
+            /* Mode Clair */
             --bg-primary: #f1f5f9;
             --bg-secondary: #ffffff;
             --bg-card: rgba(255, 255, 255, 0.92);
@@ -88,7 +88,7 @@
             text-transform: uppercase;
         }
 
-        /* Canvas de pétales Minecraft carrés */
+        /* Canvas de pétales d'azalée / cerisier carrés */
         #petalCanvas {
             position: fixed;
             top: 0;
@@ -99,7 +99,6 @@
             z-index: 99;
         }
 
-        /* Image d'arrière-plan globale */
         .global-bg-wrapper {
             position: fixed;
             top: 0;
@@ -119,7 +118,7 @@
             opacity: 0.15;
         }
 
-        /* Navigation Haute */
+        /* Header & Navigation */
         header {
             position: sticky;
             top: 0;
@@ -147,6 +146,7 @@
             gap: 12px;
             text-decoration: none;
             color: var(--text-primary);
+            cursor: pointer;
         }
 
         .brand-logo-container {
@@ -154,27 +154,19 @@
             align-items: center;
             justify-content: center;
             height: 48px;
-            min-width: 48px;
         }
 
         .brand-logo-container img {
             height: 48px;
             width: auto;
-            max-width: 140px;
+            max-width: 150px;
             object-fit: contain;
             filter: drop-shadow(0 2px 8px var(--accent-cyan-glow));
             transition: transform 0.3s ease;
         }
 
-        .brand-logo-fallback {
-            display: none;
-            font-size: 2rem;
-            color: var(--accent-cyan);
-            filter: drop-shadow(0 0 10px var(--accent-cyan-glow));
-        }
-
         .brand:hover img {
-            transform: scale(1.06) rotate(-2deg);
+            transform: scale(1.05) rotate(-2deg);
         }
 
         .brand-text h1 {
@@ -231,7 +223,7 @@
             cursor: pointer;
         }
 
-        /* Hero Section (Vidéo 16:9 YouTube sans bandes noires) */
+        /* Hero Section (Vidéo YouTube 16:9 sans bandes noires) */
         .hero {
             position: relative;
             min-height: 82vh;
@@ -471,41 +463,51 @@
         }
 
         /* ==========================================================================
-           SÉPARATEUR DE BLOCS D'HERBE MINECRAFT + PARADE DES MOBS & DU STAFF
+           BARRE DE SÉPARATION : FEUILLES D'AZALÉE FLEURIE & TERRE DE MINECRAFT
            ========================================================================== */
-        .grass-divider-wrapper {
+        .azalea-divider-container {
             position: relative;
             width: 100%;
-            height: 80px;
-            margin-top: -30px;
+            height: 100px;
+            margin-top: -38px;
             z-index: 10;
             overflow: visible;
         }
 
-        /* Le bandeau de blocs d'herbe pixel art */
-        .minecraft-grass-border {
+        /* Bloc Feuilles d'Azalée Fleurie Minecraft (Texture pixelisée authentique 16x16) */
+        .minecraft-azalea-leaves {
+            position: absolute;
+            bottom: 32px;
+            left: 0;
+            width: 100%;
+            height: 32px;
+            background-color: #4b6a25;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%233a551d'/%3E%3Crect x='1' y='1' width='3' height='2' fill='%23567d2b'/%3E%3Crect x='7' y='2' width='3' height='2' fill='%23567d2b'/%3E%3Crect x='12' y='1' width='3' height='2' fill='%232b4015'/%3E%3Crect x='4' y='6' width='3' height='3' fill='%232b4015'/%3E%3Crect x='10' y='7' width='3' height='2' fill='%23567d2b'/%3E%3Crect x='2' y='11' width='2' height='3' fill='%23567d2b'/%3E%3Crect x='8' y='12' width='3' height='2' fill='%232b4015'/%3E%3Crect x='13' y='11' width='2' height='2' fill='%23567d2b'/%3E%3C!-- Fleurs d'azalée rose vif (Flowering Azalea) --%3E%3Crect x='3' y='2' width='2' height='2' fill='%23f482be'/%3E%3Crect x='2' y='3' width='4' height='1' fill='%23de4f9d'/%3E%3Crect x='3' y='3' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='11' y='4' width='2' height='2' fill='%23f482be'/%3E%3Crect x='10' y='5' width='4' height='1' fill='%23de4f9d'/%3E%3Crect x='11' y='5' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='6' y='10' width='2' height='2' fill='%23f482be'/%3E%3Crect x='5' y='11' width='4' height='1' fill='%23de4f9d'/%3E%3Crect x='6' y='11' width='1' height='1' fill='%23ffffff'/%3E%3C/svg%3E");
+            background-size: 32px 32px;
+            image-rendering: pixelated;
+            box-shadow: 0 -4px 15px rgba(222, 79, 157, 0.4);
+            border-top: 2px solid #5f8a30;
+        }
+
+        /* Bloc de Terre Minecraft Officiel (Authentic Dirt Texture) */
+        .minecraft-dirt-layer {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 40px;
-            background-color: #866043; /* Terre */
-            background-image: 
-                /* Ligne d'herbe pixel verte supérieure */
-                linear-gradient(to bottom, #5c8e32 0px, #5c8e32 10px, transparent 10px),
-                /* Découpes pixelisées de l'herbe sur la terre */
-                radial-gradient(#4b7628 30%, transparent 35%),
-                radial-gradient(#5c8e32 40%, transparent 45%);
-            background-size: 100% 100%, 16px 16px, 24px 24px;
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5), inset 0 3px 0 #7ab244;
-            border-bottom: 3px solid #4a3424;
+            height: 32px;
+            background-color: #866043;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23866043'/%3E%3Crect x='1' y='1' width='2' height='2' fill='%23573d26'/%3E%3Crect x='6' y='2' width='2' height='1' fill='%239c724c'/%3E%3Crect x='11' y='1' width='2' height='2' fill='%23573d26'/%3E%3Crect x='3' y='5' width='2' height='2' fill='%239c724c'/%3E%3Crect x='9' y='6' width='3' height='2' fill='%23573d26'/%3E%3Crect x='13' y='7' width='2' height='1' fill='%239c724c'/%3E%3Crect x='0' y='10' width='2' height='2' fill='%23573d26'/%3E%3Crect x='5' y='11' width='2' height='2' fill='%239c724c'/%3E%3Crect x='11' y='12' width='3' height='2' fill='%23573d26'/%3E%3Crect x='7' y='14' width='2' height='1' fill='%239c724c'/%3E%3C/svg%3E");
+            background-size: 32px 32px;
             image-rendering: pixelated;
+            border-top: 2px solid #4a3424;
+            box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4), 0 6px 15px rgba(0,0,0,0.5);
         }
 
-        /* Rail de défilé animé des personnages & mobs */
+        /* Défilé animé des Personnages & Mobs */
         .mobs-parade-track {
             position: absolute;
-            bottom: 36px; /* Les pieds touchent l'herbe */
+            bottom: 64px; /* Posés précisément sur les feuilles d'azalée */
             left: 0;
             width: 200%;
             display: flex;
@@ -524,7 +526,6 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* Unité personnage / mob en marche */
         .parade-entity {
             display: flex;
             flex-direction: column;
@@ -549,7 +550,6 @@
             z-index: 20;
         }
 
-        /* Étiquette de pseudo Minecraft authentique */
         .entity-nametag {
             background: rgba(0, 0, 0, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -596,7 +596,6 @@
             transform: translateY(0);
         }
 
-        /* En-tête des pages */
         .page-header {
             text-align: center;
             margin-bottom: 3.5rem;
@@ -713,7 +712,7 @@
             margin: 0;
         }
 
-        /* Catégorie Événements */
+        /* Événements */
         .events-container {
             display: flex;
             flex-direction: column;
@@ -786,7 +785,7 @@
             width: 20px;
         }
 
-        /* Catégorie Galerie & Archives */
+        /* Galerie & Archives */
         .gallery-filter-tabs {
             display: flex;
             justify-content: center;
@@ -926,7 +925,7 @@
             margin-top: 2rem;
         }
 
-        /* Règlements (Onglets Minecraft / Discord) */
+        /* Règlements */
         .rules-tabs {
             display: flex;
             justify-content: center;
@@ -1004,7 +1003,7 @@
             line-height: 1.65;
         }
 
-        /* Équipe & Membres Staff */
+        /* Équipe */
         .staff-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1067,7 +1066,7 @@
             margin-top: 4px;
         }
 
-        /* Tableau de Hiérarchie */
+        /* Hiérarchie */
         .hierarchy-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1126,7 +1125,7 @@
             font-size: 0.82rem;
         }
 
-        /* Liens Réseaux Sociaux */
+        /* Réseaux Sociaux */
         .social-buttons {
             display: flex;
             justify-content: center;
@@ -1185,7 +1184,7 @@
             box-shadow: 0 8px 25px var(--accent-cyan-glow);
         }
 
-        /* Toast de Notification */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -1265,7 +1264,7 @@
             background: rgba(0, 0, 0, 0.2);
         }
 
-        /* Lightbox Image Agrandie */
+        /* Lightbox */
         .lightbox-overlay {
             position: fixed;
             inset: 0;
@@ -1307,7 +1306,7 @@
             text-align: center;
         }
 
-        /* Pied de Page */
+        /* Footer */
         footer {
             background: var(--bg-secondary);
             border-top: 1px solid var(--border-color);
@@ -1328,11 +1327,13 @@
         .footer-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .footer-brand img {
             height: 38px;
+            width: auto;
+            object-fit: contain;
         }
 
         .footer-links {
@@ -1361,7 +1362,6 @@
             line-height: 1.6;
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .nav-links {
                 position: fixed;
@@ -1398,7 +1398,7 @@
 </head>
 <body>
 
-    <!-- Canvas des pétales Minecraft -->
+    <!-- Animation de pétales d'azalée carrés -->
     <canvas id="petalCanvas"></canvas>
 
     <!-- Fond d'écran global -->
@@ -1407,10 +1407,9 @@
     <!-- Barre de Navigation -->
     <header>
         <div class="nav-container">
-            <a href="#accueil" class="brand" onclick="navigateToPage('accueil')">
+            <a onclick="navigateToPage('accueil')" class="brand">
                 <div class="brand-logo-container">
-                    <img id="siteLogoImg" src="logo.png" alt="AxeCraft Logo" onerror="handleLogoFallback(this)">
-                    <i class="fa-solid fa-gem brand-logo-fallback" id="siteLogoFallback"></i>
+                    <img id="siteLogoImg" src="logo.png" alt="AxeCraft Logo">
                 </div>
                 <div class="brand-text">
                     <h1 class="mc-font">AXECRAFT</h1>
@@ -1436,10 +1435,10 @@
 
     <main>
         <!-- ==========================================================================
-             PAGE 1 : ACCUEIL (HERO + BLOCS D'HERBE + MOBS DU STAFF EN MARCHE)
+             PAGE 1 : ACCUEIL
              ========================================================================== -->
         <div id="page-accueil" class="page-view active" style="padding: 0; max-width: 100%;">
-            <!-- HERO AVEC VIDÉO YOUTUBE 16:9 -->
+            <!-- HERO AVEC VIDÉO YOUTUBE 16:9 SANS BANDES NOIRES -->
             <section class="hero">
                 <div class="video-bg-container">
                     <div id="ytPlayer"></div>
@@ -1488,10 +1487,10 @@
                 </div>
             </section>
 
-            <!-- SÉPARATEUR DE BLOCS D'HERBE + DÉFILÉ DE MOBS ET MEMBRES DU STAFF -->
-            <div class="grass-divider-wrapper">
+            <!-- SÉPARATEUR : FEUILLES D'AZALÉE FLEURIE & TERRE MINECRAFT + DÉFILÉ -->
+            <div class="azalea-divider-container">
                 <div class="mobs-parade-track" id="mobsParade">
-                    <!-- Ensemble 1 : Staff et Mobs -->
+                    <!-- Groupe 1 : Staff & Mobs -->
                     <div class="parade-entity" onclick="openSkinViewer('MrAshitaka', 'Fondateur', '#e03131')">
                         <span class="entity-nametag nametag-fondateur">MrAshitaka</span>
                         <img class="entity-sprite" src="https://minotar.net/armor/body/MrAshitaka/100.png" alt="MrAshitaka">
@@ -1542,7 +1541,7 @@
                         <img class="entity-sprite" src="https://minotar.net/armor/body/Zarkitooo/100.png" alt="Zarkitooo">
                     </div>
 
-                    <!-- Ensemble 2 (Duplicata pour boucle fluide infinie) -->
+                    <!-- Groupe 2 (Duplicata pour boucle continue) -->
                     <div class="parade-entity" onclick="openSkinViewer('MrAshitaka', 'Fondateur', '#e03131')">
                         <span class="entity-nametag nametag-fondateur">MrAshitaka</span>
                         <img class="entity-sprite" src="https://minotar.net/armor/body/MrAshitaka/100.png" alt="MrAshitaka">
@@ -1594,11 +1593,12 @@
                     </div>
                 </div>
 
-                <!-- Bandeau de blocs d'herbe pixelisés -->
-                <div class="minecraft-grass-border"></div>
+                <!-- Les 2 blocs officiels superposés -->
+                <div class="minecraft-azalea-leaves"></div>
+                <div class="minecraft-dirt-layer"></div>
             </div>
 
-            <!-- APERÇU SUR LA PAGE D'ACCUEIL -->
+            <!-- APERÇU SUR ACCUEIL -->
             <div style="max-width: 1350px; margin: 3.5rem auto 0 auto; padding: 0 1.5rem;">
                 <div class="cards-grid">
                     <div class="card">
@@ -1680,7 +1680,7 @@
         </div>
 
         <!-- ==========================================================================
-             PAGE 3 : AVENTHYR RPG (AVEC BANNIÈRE ALPHA)
+             PAGE 3 : AVENTHYR RPG (ALPHA)
              ========================================================================== -->
         <div id="page-aventhyr" class="page-view">
             <div class="page-header">
@@ -1736,7 +1736,7 @@
         </div>
 
         <!-- ==========================================================================
-             PAGE 4 : ÉVÉNEMENTS (NOËL AVENTHYR + INFOS DISCORD)
+             PAGE 4 : ÉVÉNEMENTS (NOËL AVENTHYR)
              ========================================================================== -->
         <div id="page-events" class="page-view">
             <div class="page-header">
@@ -1788,7 +1788,6 @@
                     </div>
                 </div>
 
-                <!-- Événement en cours : Lancement Galaxie 26.3 -->
                 <div class="card" style="border-left: 5px solid var(--accent-green);">
                     <div class="event-header">
                         <h3 class="mc-font" style="font-size: 1.25rem;">
@@ -1806,7 +1805,7 @@
         </div>
 
         <!-- ==========================================================================
-             PAGE 5 : GALERIE & ARCHIVES (ANCIEN & NOUVEAU AXECRAFT)
+             PAGE 5 : GALERIE & ARCHIVES
              ========================================================================== -->
         <div id="page-galerie" class="page-view">
             <div class="page-header">
@@ -1817,7 +1816,6 @@
                 </p>
             </div>
 
-            <!-- Filtres -->
             <div class="gallery-filter-tabs">
                 <button class="gallery-filter-btn active" data-filter="all"><i class="fa-solid fa-border-all"></i> Tout Afficher</button>
                 <button class="gallery-filter-btn" data-filter="nouveau"><i class="fa-solid fa-sparkles"></i> Nouveau AxeCraft</button>
@@ -1854,7 +1852,7 @@
                     <div class="gallery-caption">Ancien AxeCraft - Rassemblement des joueurs</div>
                 </div>
 
-                <!-- Carte Vidéo YouTube 1 -->
+                <!-- Vidéo YouTube 1 -->
                 <div class="video-card-embed" data-category="video">
                     <iframe src="https://www.youtube-nocookie.com/embed/IvI6Xu2zVYE" title="Trailer AxeCraft 1" allowfullscreen></iframe>
                     <div class="video-card-meta">
@@ -1864,7 +1862,7 @@
                     </div>
                 </div>
 
-                <!-- Carte Vidéo YouTube 2 -->
+                <!-- Vidéo YouTube 2 -->
                 <div class="video-card-embed" data-category="video">
                     <iframe src="https://www.youtube-nocookie.com/embed/mZ5fkZxuf34" title="Trailer AxeCraft 2" allowfullscreen></iframe>
                     <div class="video-card-meta">
@@ -1891,7 +1889,7 @@
         </div>
 
         <!-- ==========================================================================
-             PAGE 6 : RÈGLEMENTS OFFICIELS (MINECRAFT & DISCORD)
+             PAGE 6 : RÈGLEMENTS OFFICIELS
              ========================================================================== -->
         <div id="page-reglements" class="page-view">
             <div class="page-header">
@@ -2001,7 +1999,7 @@
         </div>
 
         <!-- ==========================================================================
-             PAGE 7 : ÉQUIPE & HIÉRARCHIE (SKINS 3D & POSTES)
+             PAGE 7 : ÉQUIPE & HIÉRARCHIE
              ========================================================================== -->
         <div id="page-equipe" class="page-view">
             <div class="page-header">
@@ -2113,12 +2111,12 @@
         </div>
     </main>
 
-    <!-- BOUTON FLOTTANT DE CHANGEMENT DE THÈME -->
+    <!-- BOUTON FLOTTANT CHANGEMENT DE THÈME -->
     <button class="theme-toggle-floating" id="themeSwitcherBtn" onclick="toggleSiteTheme()">
         <i class="fa-solid fa-circle-half-stroke"></i> <span id="themeBtnText">VERSION CLAIRE</span>
     </button>
 
-    <!-- TOAST DE COPIE IP -->
+    <!-- TOAST COPIE IP -->
     <div class="toast" id="copyToast">
         <i class="fa-solid fa-circle-check"></i>
         <span>IP <strong>play.axecraft.fr</strong> copiée dans le presse-papier !</span>
@@ -2139,7 +2137,7 @@
         </div>
     </div>
 
-    <!-- LIGHTBOX VISIONNEUSE D'IMAGES -->
+    <!-- LIGHTBOX IMAGES -->
     <div class="lightbox-overlay" id="lightboxModal" onclick="closeLightbox(event)">
         <div class="lightbox-container">
             <img id="lightboxImg" src="" alt="Capture">
@@ -2147,11 +2145,11 @@
         </div>
     </div>
 
-    <!-- PIED DE PAGE -->
+    <!-- FOOTER -->
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
-                <img src="logo.png" alt="AxeCraft" onerror="handleLogoFallback(this)">
+                <img src="logo.png" alt="AxeCraft">
                 <span class="mc-font" style="font-size: 1.15rem; color: var(--text-primary);">AXECRAFT | GROUPE CELESTIA</span>
             </div>
             
@@ -2176,54 +2174,44 @@
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
         /* ==========================================================================
-           1. AUTO-RÉPARATION DU LOGO (CASSE & FALLBACK)
+           1. CHARGEMENT ET TOLÉRANCE DU LOGO
            ========================================================================== */
-        const logoVariants = ['Logo.png', 'logo.PNG', 'LOGO.png', 'assets/logo.png', './logo.png'];
-        let logoTryIndex = 0;
+        const logoImg = document.getElementById('siteLogoImg');
+        const candidatePaths = ['logo.png', 'Logo.png', 'logo.PNG', './logo.png', './Logo.png'];
+        let pathIdx = 0;
 
-        function handleLogoFallback(imgElement) {
-            if (logoTryIndex < logoVariants.length) {
-                imgElement.src = logoVariants[logoTryIndex++];
-            } else {
-                imgElement.style.display = 'none';
-                const fallbackIcon = document.getElementById('siteLogoFallback');
-                if (fallbackIcon) fallbackIcon.style.display = 'inline-block';
+        logoImg.onerror = function() {
+            pathIdx++;
+            if (pathIdx < candidatePaths.length) {
+                this.src = candidatePaths[pathIdx];
             }
-        }
+        };
 
         /* ==========================================================================
-           2. SYSTÈME DE PAGES INDÉPENDANTES (SPA ROUTER)
+           2. SYSTÈME DE PAGES (SPA)
            ========================================================================== */
         const validPages = ['accueil', 'jeux', 'aventhyr', 'events', 'galerie', 'reglements', 'equipe'];
 
         function navigateToPage(pageId) {
             if (!validPages.includes(pageId)) pageId = 'accueil';
 
-            // Masquer toutes les pages et activer la page ciblée
             document.querySelectorAll('.page-view').forEach(view => {
                 view.classList.remove('active');
             });
             const targetView = document.getElementById(`page-${pageId}`);
             if (targetView) targetView.classList.add('active');
 
-            // Mettre à jour les liens actifs de la barre de navigation
             document.querySelectorAll('.nav-links a').forEach(link => {
                 link.classList.remove('active');
             });
             const activeNav = document.getElementById(`nav-${pageId}`);
             if (activeNav) activeNav.classList.add('active');
 
-            // Fermer le menu burger sur mobile
             document.getElementById('navLinks').classList.remove('open');
-
-            // Mettre à jour l'URL hash sans recharger la page
             window.location.hash = pageId;
-
-            // Défilement fluide vers le haut
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Écouter les changements d'ancre (F5 ou navigation avant/arrière)
         window.addEventListener('hashchange', () => {
             const hash = window.location.hash.replace('#', '');
             if (validPages.includes(hash)) {
@@ -2231,14 +2219,13 @@
             }
         });
 
-        // Initialisation de la page au premier chargement
         window.addEventListener('DOMContentLoaded', () => {
             const initialHash = window.location.hash.replace('#', '') || 'accueil';
             navigateToPage(initialHash);
         });
 
         /* ==========================================================================
-           3. GESTION DU THÈME (CLAIR / SOMBRE)
+           3. THÈME CLAIR / SOMBRE
            ========================================================================== */
         function initTheme() {
             const savedTheme = localStorage.getItem('axecraft_theme') || 'dark';
@@ -2265,7 +2252,7 @@
         initTheme();
 
         /* ==========================================================================
-           4. PÉTALES MINECRAFT EN PIXELS CARRÉS
+           4. PÉTALES CARRÉS MINECRAFT (AZALÉE / CERISIER)
            ========================================================================== */
         const petalCanvas = document.getElementById('petalCanvas');
         const ctx = petalCanvas.getContext('2d');
@@ -2289,8 +2276,8 @@
                 this.size = Math.floor(Math.random() * 4) + 4;
                 this.speedY = Math.random() * 1.2 + 0.8;
                 this.speedX = Math.sin(Math.random() * Math.PI) * 0.8 + 0.3;
-                this.color = Math.random() > 0.5 ? '#ffb7c5' : '#ff94aa';
-                this.shadowColor = '#e06b88';
+                this.color = Math.random() > 0.5 ? '#f482be' : '#de4f9d';
+                this.shadowColor = '#a82c6c';
             }
 
             update() {
@@ -2330,7 +2317,7 @@
         animatePetals();
 
         /* ==========================================================================
-           5. COPIE DE L'IP AVEC ANIMATION & TOAST
+           5. COPIE DE L'IP
            ========================================================================== */
         function copyServerIP() {
             const ip = "play.axecraft.fr";
@@ -2373,7 +2360,7 @@
         });
 
         /* ==========================================================================
-           7. ONGLETS DE RÈGLEMENTS (MINECRAFT / DISCORD)
+           7. ONGLETS DE RÈGLEMENTS
            ========================================================================== */
         function switchRuleTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -2389,7 +2376,7 @@
         }
 
         /* ==========================================================================
-           8. FILTRAGE DE LA GALERIE & LIGHTBOX
+           8. FILTRAGE GALERIE & LIGHTBOX
            ========================================================================== */
         document.querySelectorAll('.gallery-filter-btn').forEach(button => {
             button.addEventListener('click', () => {
@@ -2467,7 +2454,7 @@
         }
 
         /* ==========================================================================
-           10. LECTEUR YOUTUBE D'ARRIÈRE-PLAN SANS BANDES NOIRES
+           10. LECTEUR YOUTUBE SANS BANDES NOIRES
            ========================================================================== */
         let player;
         const videoList = ['IvI6Xu2zVYE', 'mZ5fkZxuf34'];
