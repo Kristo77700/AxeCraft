@@ -54,7 +54,7 @@
             min-height: 100vh;
         }
 
-        /* CINEMATIC ANIMATED BACKGROUND */
+        /* CINEMATIC PAGE BACKGROUND */
         .bg-cinematic {
             position: fixed;
             top: 0;
@@ -72,12 +72,12 @@
             left: -6%;
             width: 112%;
             height: 112%;
-            background-image: url('background.jpg');
+            background-image: url('background.png');
             background-position: center center;
             background-size: cover;
             background-repeat: no-repeat;
-            animation: cinematicMove 32s ease-in-out infinite alternate;
-            filter: brightness(0.48) contrast(1.15) saturate(1.1);
+            animation: cinematicMove 34s ease-in-out infinite alternate;
+            filter: brightness(0.42) contrast(1.15) saturate(1.1);
             will-change: transform;
         }
 
@@ -89,19 +89,13 @@
             height: 100%;
             background: 
                 radial-gradient(circle at 50% 25%, rgba(20, 16, 13, 0.3) 0%, rgba(10, 8, 6, 0.85) 100%),
-                linear-gradient(180deg, rgba(15, 13, 11, 0.6) 0%, rgba(10, 8, 6, 0.95) 100%);
+                linear-gradient(180deg, rgba(15, 13, 11, 0.65) 0%, rgba(10, 8, 6, 0.95) 100%);
         }
 
         @keyframes cinematicMove {
-            0% {
-                transform: scale(1) translate(0, 0);
-            }
-            50% {
-                transform: scale(1.08) translate(-1.5%, -1%);
-            }
-            100% {
-                transform: scale(1.04) translate(1.5%, 0.5%);
-            }
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.08) translate(-1.5%, -1%); }
+            100% { transform: scale(1.04) translate(1.5%, 0.5%); }
         }
 
         /* Minecraft Font Utilities (strictly ASCII uppercase, no accented letters) */
@@ -237,7 +231,7 @@
             max-width: 1300px;
             width: 100%;
             margin: 0 auto;
-            padding: 40px 24px 80px;
+            padding: 35px 24px 80px;
             display: none;
             animation: fadeIn 0.4s ease forwards;
         }
@@ -251,36 +245,64 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* HERO SECTION */
-        .hero {
+        /* HERO CARD WITH VIDEO BACKGROUND */
+        .hero-showcase {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 2px solid var(--wood-border);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.7);
+            background: #0f0d0b;
+            margin-bottom: 25px;
+        }
+
+        .hero-video-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 125%;
+            height: 125%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero-video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+            filter: brightness(0.65) contrast(1.15) saturate(1.1);
+        }
+
+        .hero-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center, rgba(16, 12, 10, 0.65) 0%, rgba(10, 8, 6, 0.88) 100%),
+                linear-gradient(180deg, rgba(20, 16, 13, 0.4) 0%, rgba(10, 8, 6, 0.85) 100%);
+            z-index: 2;
+        }
+
+        .hero-inner-content {
+            position: relative;
+            z-index: 3;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 50px 20px 40px;
-            position: relative;
-        }
-
-        .hero-logo {
-            width: 140px;
-            height: 140px;
-            object-fit: contain;
-            image-rendering: pixelated;
-            filter: drop-shadow(0 0 25px var(--cherry-glow));
-            margin-bottom: 24px;
-            animation: floatLogo 4s ease-in-out infinite;
-        }
-
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            padding: 55px 25px 50px;
         }
 
         .hero-title {
             font-size: 3rem;
             color: var(--cherry-pink);
             text-shadow: 3px 3px 0px #000, 0 0 20px var(--cherry-glow);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .hero-subtitle {
@@ -289,35 +311,39 @@
             max-width: 680px;
             margin-bottom: 30px;
             line-height: 1.6;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+        }
+
+        .hero-subtitle strong {
+            color: var(--text-main);
         }
 
         .f2p-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(77, 238, 234, 0.12);
+            background: rgba(77, 238, 234, 0.15);
             border: 1px solid var(--diamond);
             color: var(--diamond);
-            padding: 6px 16px;
+            padding: 6px 18px;
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(77, 238, 234, 0.2);
+            margin-bottom: 22px;
+            box-shadow: 0 0 15px rgba(77, 238, 234, 0.25);
             backdrop-filter: blur(6px);
         }
 
         /* SERVER IP BOX */
         .ip-card {
-            background: var(--bg-card);
+            background: rgba(22, 17, 13, 0.92);
             border: 2px solid var(--wood-border);
-            padding: 18px 28px;
+            padding: 16px 28px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 20px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -351,7 +377,7 @@
         }
 
         .ip-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -380,7 +406,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 25px;
-            margin-top: 40px;
+            margin-top: 15px;
         }
 
         .feature-card {
@@ -965,7 +991,7 @@
             }
 
             .hero-title {
-                font-size: 2.2rem;
+                font-size: 2.1rem;
             }
 
             .ip-card {
@@ -1038,25 +1064,36 @@
 
         <!-- PAGE 1: ACCUEIL -->
         <main id="page-accueil" class="page-content active-page">
-            <section class="hero">
-                <img src="logo.png" alt="AxeCraft Logo" class="hero-logo" onerror="this.style.display='none'">
-                <div class="f2p-badge mc-font">
-                    <i class="fa-solid fa-gem"></i> SERVEUR 100% GRATUIT • FREE-TO-PLAY
+            
+            <!-- HERO SHOWCASE WITH SILENT LOOPING VIDEOS BEHIND -->
+            <section class="hero-showcase">
+                <!-- Video Background Wrapper -->
+                <div class="hero-video-wrapper">
+                    <div id="ytHeroPlayer"></div>
                 </div>
-                <h1 class="hero-title mc-font">BIENVENUE SUR AXECRAFT</h1>
-                <p class="hero-subtitle">
-                    Plongez dans un univers Minecraft unique propulsé par la communauté du <strong>Groupe Celestia</strong>. 
-                    Rejoignez dès maintenant notre aventure RPG en version <strong>26.3</strong>.
-                </p>
+                
+                <!-- Darkened Glass Overlay for perfect text contrast -->
+                <div class="hero-video-overlay"></div>
 
-                <!-- Interactive Server IP Box -->
-                <div class="ip-card" id="mainIpBox" onclick="copyIP()">
-                    <div class="ip-info">
-                        <span class="ip-label mc-font">ADRESSE DU SERVEUR</span>
-                        <span class="ip-address mc-font">play.axecraft.fr</span>
+                <!-- Hero Content (Text + IP Card) -->
+                <div class="hero-inner-content">
+                    <div class="f2p-badge mc-font">
+                        <i class="fa-solid fa-gem"></i> SERVEUR 100% GRATUIT • FREE-TO-PLAY
                     </div>
-                    <div class="ip-action mc-font">
-                        <i class="fa-solid fa-copy"></i> COPIER L'IP
+                    <h1 class="hero-title mc-font">BIENVENUE SUR AXECRAFT</h1>
+                    <p class="hero-subtitle">
+                        Plongez dans un univers Minecraft unique propulsé par la communauté du <strong>Groupe Celestia</strong>. Rejoignez dès maintenant notre aventure RPG en version <strong>26.3</strong>.
+                    </p>
+
+                    <!-- Interactive Server IP Box -->
+                    <div class="ip-card" id="mainIpBox" onclick="copyIP()">
+                        <div class="ip-info">
+                            <span class="ip-label mc-font">ADRESSE DU SERVEUR</span>
+                            <span class="ip-address mc-font">play.axecraft.fr</span>
+                        </div>
+                        <div class="ip-action mc-font">
+                            <i class="fa-solid fa-copy"></i> COPIER L'IP
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1591,9 +1628,50 @@
         <span id="toastMessage">IP COPIEE : PLAY.AXECRAFT.FR</span>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- YOUTUBE IFRAME API SCRIPT -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- MAIN APP SCRIPTS -->
     <script>
-        // 1. PAGE NAVIGATION & RELOAD RETENTION
+        // 1. YOUTUBE HERO VIDEO CAROUSEL (Muted, Auto-looping playlist)
+        const heroVideoIds = ['IvI6Xu2zVYE', 'mZ5fkZxuf34'];
+        let currentVideoIdx = 0;
+        let ytPlayer = null;
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('ytHeroPlayer', {
+                videoId: heroVideoIds[0],
+                playerVars: {
+                    autoplay: 1,
+                    mute: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    rel: 0,
+                    loop: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    disablekb: 1,
+                    iv_load_policy: 3
+                },
+                events: {
+                    onReady: (e) => {
+                        e.target.mute();
+                        e.target.playVideo();
+                    },
+                    onStateChange: (e) => {
+                        // When video ends, automatically load the next one
+                        if (e.data === YT.PlayerState.ENDED) {
+                            currentVideoIdx = (currentVideoIdx + 1) % heroVideoIds.length;
+                            ytPlayer.loadVideoById(heroVideoIds[currentVideoIdx]);
+                            ytPlayer.mute();
+                            ytPlayer.playVideo();
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. PAGE NAVIGATION & RELOAD RETENTION
         function navigateTo(pageId) {
             const pages = document.querySelectorAll('.page-content');
             pages.forEach(p => p.classList.remove('active-page'));
@@ -1615,7 +1693,7 @@
             // Close mobile menu
             document.getElementById('navLinks').classList.remove('mobile-open');
 
-            // Update URL hash without forcing scroll
+            // Update URL hash without forcing jump
             history.replaceState(null, null, '#' + pageId);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1634,7 +1712,7 @@
             initPetalsCanvas();
         });
 
-        // 2. RULES TABS SWITCHER
+        // 3. RULES TABS SWITCHER
         function switchRulesTab(tab) {
             document.querySelectorAll('.rules-tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.rules-group').forEach(grp => grp.classList.remove('active'));
@@ -1648,7 +1726,7 @@
             }
         }
 
-        // 3. COPY IP & TOAST
+        // 4. COPY IP & TOAST
         function showToast(msg) {
             const toast = document.getElementById('toastNotification');
             const toastMsg = document.getElementById('toastMessage');
@@ -1668,7 +1746,7 @@
             });
         }
 
-        // 4. START ADVENTURE INTERACTION
+        // 5. START ADVENTURE INTERACTION
         function startAdventure() {
             navigateTo('accueil');
             setTimeout(() => {
@@ -1686,7 +1764,7 @@
             }, 150);
         }
 
-        // 5. 3D SKIN VIEWER MODAL
+        // 6. 3D SKIN VIEWER MODAL
         let skinViewer = null;
 
         function initSkinViewer() {
@@ -1731,7 +1809,7 @@
             }
         }
 
-        // 6. CHERRY GROVE PETALS ANIMATION
+        // 7. CHERRY GROVE PETALS ANIMATION
         function initPetalsCanvas() {
             const canvas = document.getElementById('petals-canvas');
             const ctx = canvas.getContext('2d');
